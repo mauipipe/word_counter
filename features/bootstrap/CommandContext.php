@@ -49,8 +49,7 @@ class CommandContext implements Context
      */
     public function theResultWouldBeEqualTo(PyStringNode $expectedResponse)
     {
-        $decodedResponse = json_decode($expectedResponse->getRaw(), true);
-
+        $decodedResponse = json_decode(trim($expectedResponse->getRaw()), true);
         PHPUnit_Framework_Assert::assertSame($decodedResponse, $this->commandResponse);
     }
 
