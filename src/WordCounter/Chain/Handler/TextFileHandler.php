@@ -1,4 +1,5 @@
 <?php
+
 namespace WordCounter\Chain\Handler;
 
 use WordCounter\Factory\SplFileObjectFactoryInterface;
@@ -7,7 +8,7 @@ use WordCounter\Factory\SplFileObjectFactoryInterface;
  * Created by IntelliJ IDEA.
  * User: mauilap
  * Date: 29/10/16
- * Time: 17.57
+ * Time: 17.57.
  */
 class TextFileHandler implements WordCounterInterface
 {
@@ -25,7 +26,7 @@ class TextFileHandler implements WordCounterInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getWordCounts($source)
     {
@@ -34,34 +35,41 @@ class TextFileHandler implements WordCounterInterface
 
         while (!$fileObject->eof()) {
             $buffer = $fileObject->current();
-            $partialResult = $this->getSanitiziedWords($buffer);
-            $this->add($partialResult, $counts);
+            $partialResult = $this->getSanitizedPartialResult($buffer);
+            $this->sumCounts($partialResult, $counts);
             unset($partialResult);
 
             $fileObject->next();
         }
 
         return $counts;
-
     }
 
-    private function add($a, &$result)
+    /**
+     * @param array $a
+     * @param array $result
+     */
+    private function sumCounts($a, &$result)
     {
         foreach ($a as $value) {
             $subValue = strtolower($value);
             if (!isset($result[$subValue])) {
                 $result[$subValue] = 1;
             } else {
-                $result[$subValue]++;
+                ++$result[$subValue];
             }
         }
-
-        return $result;
     }
 
-    private function getSanitiziedWords($source)
+    /**
+     * @param string $source
+     *
+     * @return array
+     */
+    private function getSanitizedPartialResult($source)
     {
         $source = preg_replace('/\s+|\r|\n|[^a-zA-Z 0-9]+/', ' ', $source);
+
         return array_filter(explode(' ', $source), 'trim');
     }
 }

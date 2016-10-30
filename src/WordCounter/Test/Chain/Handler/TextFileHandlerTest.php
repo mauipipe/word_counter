@@ -1,4 +1,5 @@
 <?php
+
 namespace WordCounter\Test\Chain\Handler;
 
 use WordCounter\Chain\Handler\TextFileHandler;
@@ -8,7 +9,7 @@ use WordCounter\Factory\SplFileObjectFactoryInterface;
  * Created by IntelliJ IDEA.
  * User: mauilap
  * Date: 29/10/16
- * Time: 18.27
+ * Time: 18.27.
  */
 class TextFileHandlerTest extends \PHPUnit_Framework_TestCase
 {

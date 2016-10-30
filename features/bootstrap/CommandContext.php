@@ -8,7 +8,7 @@ use Symfony\Component\Filesystem\Exception\FileNotFoundException;
  * Created by IntelliJ IDEA.
  * User: mauilap
  * Date: 29/10/16
- * Time: 16.45
+ * Time: 16.45.
  */
 class CommandContext implements Context
 {
@@ -28,18 +28,19 @@ class CommandContext implements Context
     {
         $sourcePath = __DIR__ . '' . self::FIXTURES_FOLDER . '' . $sourceText;
         if (!file_exists($sourcePath)) {
-            throw new FileNotFoundException(sprintf("cannot find file %s", $sourcePath));
+            throw new FileNotFoundException(sprintf('cannot find file %s', $sourcePath));
         }
     }
 
     /**
-     * @When the command :command
+     * @When the :binary command :command
      *
+     * @param string $binary
      * @param string $command
      */
-    public function theCommand($command)
+    public function theCommand($binary, $command)
     {
-        $this->commandResponse = exec(__DIR__ . $command);
+        $this->commandResponse = shell_exec($binary . ' ' . __DIR__ . $command);
     }
 
     /**
@@ -49,8 +50,6 @@ class CommandContext implements Context
      */
     public function theResultWouldBeEqualTo(PyStringNode $expectedResponse)
     {
-        $decodedResponse = json_decode(trim($expectedResponse->getRaw()), true);
-        PHPUnit_Framework_Assert::assertSame($decodedResponse, $this->commandResponse);
+        PHPUnit_Framework_Assert::assertSame(trim($expectedResponse->getRaw()), trim($this->commandResponse));
     }
-
 }
