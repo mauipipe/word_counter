@@ -7,17 +7,17 @@
  */
 require __DIR__ . '/../vendor/autoload.php';
 
-use WordCounter\Console\ConsoleRequest;
+use WordCounter\Factory\ConsoleRequestFactory;
 use WordCounter\Factory\StreamTextWordCounterFactory;
 
 const SOURCE = 'source';
 
 $rustart = getrusage();
 
-$consoleInput = new ConsoleRequest($argv);
+$consoleInput = ConsoleRequestFactory::create();
 $wordCounter = StreamTextWordCounterFactory::create();
 
-$source = $consoleInput->getParameterValue(SOURCE);
+$source = $consoleInput->getParameterValue(SOURCE, $argv);
 echo sprintf("running %s\n", $source);
 
 $result = $wordCounter->getCounts($source);

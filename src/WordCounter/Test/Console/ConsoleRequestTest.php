@@ -9,27 +9,46 @@
 namespace WordCounter\Test\Console;
 
 use WordCounter\Console\ConsoleRequest;
+use WordCounter\Exception\UndefinedInputValueException;
+use WordCounter\Guesser\ConsoleInputGuesserInterface;
 
 class ConsoleRequestTest extends \PHPUnit_Framework_TestCase
 {
     const ATTRIBUTE_FILE = 'src/WordCounter/Test/fixtures/test.txt';
     const ATTRIBUTE_WIKIPEDIA_RAW_API = 'https://en.wikipedia.org/w/index.php?title=test&action=raw';
+    const TEST_ATTRIBUTE = '--bar';
 
     /**
      * @test
+     * @dataProvider provider
      */
-    public function getsConsoleValueFromParameterAndAssertIsFile()
+    public function getsConsoleValueFromParameterAndAssertIsFile($mockArgv, $expectedResult)
     {
-        $expectedResult = '/srv/apps/word_counter/src/WordCounter/Console/../../../' . self::ATTRIBUTE_FILE;
-        $attribute = '--bar';
-        $mockArgv = [
-            1 => $attribute . ConsoleRequest::ATTRIBUTE_SEPARATOR . self::ATTRIBUTE_FILE,
-        ];
+        $consoleInputValueGuesser = $this->getConsoleInputValueGuesser();
+        $consoleInputValueGuesser->expects($this->once())
+            ->method('guess')
+            ->willReturn($expectedResult);
 
-        $consoleRequest = new ConsoleRequest($mockArgv);
-        $result = $consoleRequest->getParameterValue($attribute);
+        $consoleRequest = new ConsoleRequest($consoleInputValueGuesser);
+        $result = $consoleRequest->getParameterValue(self::TEST_ATTRIBUTE, $mockArgv);
 
         $this->assertEquals($expectedResult, $result);
+    }
+
+    public function provider()
+    {
+        $consoleInputPrefix = self::TEST_ATTRIBUTE . ConsoleRequest::ATTRIBUTE_SEPARATOR;
+
+        return [
+            [
+                [1 => $consoleInputPrefix . self::ATTRIBUTE_FILE],
+                '/srv/apps/word_counter/src/WordCounter/Console/../../../' . self::ATTRIBUTE_FILE,
+            ],
+            [
+                [1 => $consoleInputPrefix . self::ATTRIBUTE_WIKIPEDIA_RAW_API],
+                self::ATTRIBUTE_WIKIPEDIA_RAW_API,
+            ],
+        ];
     }
 
     /**
@@ -39,14 +58,14 @@ class ConsoleRequestTest extends \PHPUnit_Framework_TestCase
      */
     public function getsConsoleValueFromParameterThrowUndefinedAttributeExceptionWhenAnInvalidAttributeNameIsConsumed()
     {
-        $attribute = 'bar';
+        $consoleInputValueGuesser = $this->getConsoleInputValueGuesser();
         $mockArgv = [
-            1 => $attribute . ConsoleRequest::ATTRIBUTE_SEPARATOR . self::ATTRIBUTE_WIKIPEDIA_RAW_API,
+            1 => self::TEST_ATTRIBUTE . ConsoleRequest::ATTRIBUTE_SEPARATOR . self::ATTRIBUTE_WIKIPEDIA_RAW_API,
         ];
         $invalidConsumedAttribute = 'invalid';
 
-        $consoleRequest = new ConsoleRequest($mockArgv);
-        $this->assertEquals(self::ATTRIBUTE_WIKIPEDIA_RAW_API, $consoleRequest->getParameterValue($invalidConsumedAttribute));
+        $consoleRequest = new ConsoleRequest($consoleInputValueGuesser);
+        $consoleRequest->getParameterValue($invalidConsumedAttribute, $mockArgv);
     }
 
     /**
@@ -56,28 +75,27 @@ class ConsoleRequestTest extends \PHPUnit_Framework_TestCase
      */
     public function getsConsoleValueFromParameterThrowUndefinedInputValueExceptionWhenAnInvalidValueIsConsumed()
     {
-        $attribute = 'bar';
         $invalidValue = 'invalid';
-
         $mockArgv = [
-            1 => $attribute . ConsoleRequest::ATTRIBUTE_SEPARATOR . $invalidValue,
+            1 => self::TEST_ATTRIBUTE . ConsoleRequest::ATTRIBUTE_SEPARATOR . $invalidValue,
         ];
 
-        $consoleRequest = new ConsoleRequest($mockArgv);
-        $this->assertEquals(self::ATTRIBUTE_WIKIPEDIA_RAW_API, $consoleRequest->getParameterValue($attribute));
+        $consoleInputValueGuesser = $this->getConsoleInputValueGuesser();
+        $consoleInputValueGuesser->expects($this->once())
+            ->method('guess')
+            ->willThrowException(new UndefinedInputValueException('error'));
+
+        $consoleRequest = new ConsoleRequest($consoleInputValueGuesser);
+        $consoleRequest->getParameterValue(self::TEST_ATTRIBUTE, $mockArgv);
     }
 
     /**
-     * @test
+     * @return ConsoleInputGuesserInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    public function getsConsoleValueFromParameterAndAssertIsWikipediaRawAPIUrl()
+    private function getConsoleInputValueGuesser()
     {
-        $attribute = 'bar';
-        $mockArgv = [
-            1 => $attribute . ConsoleRequest::ATTRIBUTE_SEPARATOR . self::ATTRIBUTE_WIKIPEDIA_RAW_API,
-        ];
-
-        $consoleRequest = new ConsoleRequest($mockArgv);
-        $this->assertEquals(self::ATTRIBUTE_WIKIPEDIA_RAW_API, $consoleRequest->getParameterValue($attribute));
+        return $this->getMockBuilder('WordCounter\Guesser\ConsoleInputGuesserInterface')
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 }

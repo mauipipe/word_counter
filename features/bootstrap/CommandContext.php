@@ -63,7 +63,7 @@ class CommandContext implements Context
             }
         }
 
-        throw new RuntimeException(sprintf("invalid result %s"), $result);
+        throw new RuntimeException(sprintf('invalid result %s'), $result);
     }
 
     /**
