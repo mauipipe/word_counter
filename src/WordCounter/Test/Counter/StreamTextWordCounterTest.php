@@ -66,7 +66,8 @@ class StreamTextWordCounterTest extends \PHPUnit_Framework_TestCase
             'test' => 1,
         ];
 
-        $result = $this->streamTextWordCounter->getCounts(self::TEST_SOURCE);
+        $result = $this->streamTextWordCounter->getCounts(self::TEST_SOURCE, function () {
+        });
 
         $this->assertEquals($expectedResult, $result);
     }

@@ -7,17 +7,19 @@
  */
 require __DIR__ . '/../vendor/autoload.php';
 
-use WordCounter\Factory\ConsoleRequestFactory;
+use WordCounter\Container\DependencyHandler;
 use WordCounter\Factory\StreamTextWordCounterFactory;
 
 const SOURCE = 'source';
 
 $rustart = getrusage();
+$container = DependencyHandler::getContainer();
+/** @var \WordCounter\Guesser\ConsoleInputGuesserInterface $guesser */
 
-$consoleInput = ConsoleRequestFactory::create();
-$wordCounter = StreamTextWordCounterFactory::create();
+$consoleRequest = $container->offsetGet('console.request.factory');
+$wordCounter = $container->offsetGet('stream_text_word.counter');
 
-$source = $consoleInput->getParameterValue(SOURCE, $argv);
+$source = $consoleRequest->getParameterValue(SOURCE, $argv);
 echo sprintf("running %s\n", $source);
 
 $result = $wordCounter->getCounts($source, function ($counter) {
