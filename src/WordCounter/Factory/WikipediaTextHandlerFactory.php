@@ -3,21 +3,22 @@
  * Created by IntelliJ IDEA.
  * User: mauilap
  * Date: 30/10/16
- * Time: 16.42.
+ * Time: 19.24.
  */
 
 namespace WordCounter\Factory;
 
-use WordCounter\Chain\Handler\TextFileHandler;
+use GuzzleHttp\Client;
+use WordCounter\Chain\Handler\WikipediaTextHandler;
 use WordCounter\Chain\Handler\WordCounterInterface;
 
-class TextFileHandlerFactory implements FactoryInterface
+class WikipediaTextHandlerFactory implements FactoryInterface
 {
     /**
      * @return WordCounterInterface;
      */
     public static function create()
     {
-        return new TextFileHandler(new SplFileObjectFactory());
+        return new WikipediaTextHandler(new Client());
     }
 }

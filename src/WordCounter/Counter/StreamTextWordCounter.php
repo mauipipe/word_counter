@@ -1,16 +1,16 @@
 <?php
-
-namespace WordCounter\Chain\Handler;
-
-use WordCounter\Factory\SplFileObjectFactoryInterface;
-
 /**
  * Created by IntelliJ IDEA.
  * User: mauilap
- * Date: 29/10/16
- * Time: 17.57.
+ * Date: 31/10/16
+ * Time: 10.35.
  */
-class TextFileHandler implements WordCounterInterface
+
+namespace WordCounter\Counter;
+
+use WordCounter\Factory\SplFileObjectFactoryInterface;
+
+class StreamTextWordCounter implements CounterInterface
 {
     /**
      * @var SplFileObjectFactoryInterface
@@ -28,7 +28,7 @@ class TextFileHandler implements WordCounterInterface
     /**
      * {@inheritdoc}
      */
-    public function getWordCounts($source)
+    public function getCounts($source)
     {
         $fileObject = $this->fileObjectFactory->create($source);
         $counts = [];

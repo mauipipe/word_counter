@@ -13,7 +13,7 @@ use WordCounter\Factory\SplFileObjectFactoryInterface;
 
 class SplFileObjectFactoryTest extends \PHPUnit_Framework_TestCase
 {
-    const TEST_PATH = __DIR__ . '/../Fixtures/test.txt';
+    const TEST_PATH = __DIR__ . '/../fixtures/test.txt';
 
     /**
      * @var SplFileObjectFactoryInterface

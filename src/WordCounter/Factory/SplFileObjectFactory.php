@@ -17,6 +17,6 @@ class SplFileObjectFactory implements SplFileObjectFactoryInterface
      */
     public function create($filePath)
     {
-        return new \SplFileObject(__DIR__ . '/../../../' . $filePath);
+        return new \SplFileObject($filePath);
     }
 }

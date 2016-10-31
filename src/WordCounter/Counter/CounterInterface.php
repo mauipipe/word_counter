@@ -6,14 +6,14 @@
  * Time: 12.01.
  */
 
-namespace WordCounter\Chain\Handler;
+namespace WordCounter\Counter;
 
-interface WordCounterInterface
+interface CounterInterface
 {
     /**
      * @param string $source
      *
      * @return array
      */
-    public function getWordCounts($source);
+    public function getCounts($source);
 }

@@ -2,7 +2,8 @@
 
 namespace WordCounter\Test\Chain\Handler;
 
-use WordCounter\Chain\Handler\TextFileHandler;
+use WordCounter\Counter\CounterInterface;
+use WordCounter\Counter\StreamTextWordCounter;
 use WordCounter\Factory\SplFileObjectFactoryInterface;
 
 /**
@@ -11,24 +12,25 @@ use WordCounter\Factory\SplFileObjectFactoryInterface;
  * Date: 29/10/16
  * Time: 18.27.
  */
-class TextFileHandlerTest extends \PHPUnit_Framework_TestCase
+class StreamTextWordCounterTest extends \PHPUnit_Framework_TestCase
 {
     const TEST_SOURCE = 'test path';
+
     /**
      * @var SplFileObjectFactoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $splFileObjectFactory;
     /**
-     * @var TextFileHandler
+     * @var CounterInterface
      */
-    private $textFileHandler;
+    private $streamTextWordCounter;
 
     public function setUp()
     {
         $this->splFileObjectFactory = $this->getMockBuilder('WordCounter\Factory\SplFileObjectFactoryInterface')
             ->getMock();
 
-        $this->textFileHandler = new TextFileHandler($this->splFileObjectFactory);
+        $this->streamTextWordCounter = new StreamTextWordCounter($this->splFileObjectFactory);
     }
 
     /**
@@ -64,7 +66,7 @@ class TextFileHandlerTest extends \PHPUnit_Framework_TestCase
             'test' => 1,
         ];
 
-        $result = $this->textFileHandler->getWordCounts(self::TEST_SOURCE);
+        $result = $this->streamTextWordCounter->getCounts(self::TEST_SOURCE);
 
         $this->assertEquals($expectedResult, $result);
     }

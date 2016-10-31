@@ -5,21 +5,22 @@
  * Date: 29/10/16
  * Time: 15.52.
  */
-const SOURCE = 'source';
 require __DIR__ . '/../vendor/autoload.php';
 
 use WordCounter\Console\ConsoleRequest;
-use WordCounter\Factory\TextFileHandlerFactory;
+use WordCounter\Factory\StreamTextWordCounterFactory;
+
+const SOURCE = 'source';
 
 $rustart = getrusage();
 
 $consoleInput = new ConsoleRequest($argv);
-$wordCounter = TextFileHandlerFactory::create();
+$wordCounter = StreamTextWordCounterFactory::create();
 
 $source = $consoleInput->getParameterValue(SOURCE);
 echo sprintf("running %s\n", $source);
 
-$result = $wordCounter->getWordCounts($source);
+$result = $wordCounter->getCounts($source);
 foreach ($result as $key => $value) {
     echo sprintf("%s=%d\n", $key, $value);
 }

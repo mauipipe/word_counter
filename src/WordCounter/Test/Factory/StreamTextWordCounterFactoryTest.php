@@ -8,20 +8,20 @@
 
 namespace WordCounter\Test\Factory;
 
-use WordCounter\Chain\Handler\TextFileHandler;
+use WordCounter\Counter\StreamTextWordCounter;
 use WordCounter\Factory\SplFileObjectFactory;
-use WordCounter\Factory\TextFileHandlerFactory;
+use WordCounter\Factory\StreamTextWordCounterFactory;
 
-class TextFileHandlerFactoryTest extends \PHPUnit_Framework_TestCase
+class StreamTextWordCounterFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
      */
     public function createsTextFileHandler()
     {
-        $expectedResult = new TextFileHandler(new SplFileObjectFactory());
+        $expectedResult = new StreamTextWordCounter(new SplFileObjectFactory());
 
-        $result = TextFileHandlerFactory::create();
+        $result = StreamTextWordCounterFactory::create();
         $this->assertEquals($expectedResult, $result);
     }
 }
