@@ -15,5 +15,5 @@ interface CounterInterface
      *
      * @return array
      */
-    public function getCounts($source);
+    public function getCounts($source, \Closure $func);
 }

@@ -20,7 +20,12 @@ $wordCounter = StreamTextWordCounterFactory::create();
 $source = $consoleInput->getParameterValue(SOURCE, $argv);
 echo sprintf("running %s\n", $source);
 
-$result = $wordCounter->getCounts($source);
+$result = $wordCounter->getCounts($source, function ($counter) {
+    if ($counter % 8192 === 0) {
+        echo ".";
+    }
+});
+
 foreach ($result as $key => $value) {
     echo sprintf("%s=%d\n", $key, $value);
 }

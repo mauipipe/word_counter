@@ -28,17 +28,18 @@ class StreamTextWordCounter implements CounterInterface
     /**
      * {@inheritdoc}
      */
-    public function getCounts($source)
+    public function getCounts($source, \Closure $func)
     {
         $fileObject = $this->fileObjectFactory->create($source);
         $counts = [];
 
+        $counter = 0;
         while (!$fileObject->eof()) {
             $buffer = $fileObject->current();
             $partialResult = $this->getSanitizedPartialResult($buffer);
             $this->sumCounts($partialResult, $counts);
             unset($partialResult);
-
+            $func(++$counter);
             $fileObject->next();
         }
 
