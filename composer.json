@@ -1,0 +1,28 @@
+{
+  "name": "mauilap/word_counter",
+  "description": "script to retrieve a the word count from different sources",
+  "type": "library",
+  "require": {
+    "guzzlehttp/guzzle": "^6.2",
+    "fabpot/php-cs-fixer": "1.12.x-dev"
+  },
+  "require-dev": {
+    "behat/behat": "^3.2",
+    "phpunit/phpunit": "^5.6"
+  },
+  "license": "MIT",
+  "autoload": {
+    "psr-0": {
+      "WordCounter": "src/"
+    }
+  },
+  "config": {
+    "bin-dir": "bin/"
+  },
+  "authors": [
+    {
+      "name": "David Contavalli",
+      "email": "mauipipe@gmail.com"
+    }
+  ]
+}
