@@ -1,6 +1,12 @@
 <?php
+/**
+ * Created by IntelliJ IDEA.
+ * User: mauilap
+ * Date: 02/11/16
+ * Time: 0.36
+ */
 
-namespace WordCounter\Manager;
+namespace WordCounter\Container;
 
 use WordCounter\App\App;
 use WordCounter\Enum\Environment;
@@ -9,13 +15,7 @@ use WordCounter\Model\Config;
 use WordCounter\Model\Dictionary;
 use WordCounter\Model\InternalResourceSerializerInterface;
 
-/**
- * Created by IntelliJ IDEA.
- * User: mauilap
- * Date: 29/10/16
- * Time: 18.34.
- */
-class FileManager
+class InternalFileGeneratorContainer
 {
     const RESOURCE_FOLDER = 'resources/';
     const TEST_FILE_FOLDER = 'fixtures/';
@@ -105,4 +105,5 @@ class FileManager
         );
         return $fullFilePath;
     }
+
 }
