@@ -3,11 +3,10 @@
  * Created by IntelliJ IDEA.
  * User: mauilap
  * Date: 01/11/16
- * Time: 0.30
+ * Time: 0.30.
  */
 
 namespace WordCounter\Exception;
-
 
 class NotAllowedConsoleParamException extends \Exception
 {

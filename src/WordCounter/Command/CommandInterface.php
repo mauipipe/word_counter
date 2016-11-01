@@ -3,18 +3,19 @@
  * Created by IntelliJ IDEA.
  * User: mauilap
  * Date: 01/11/16
- * Time: 0.08
+ * Time: 0.08.
  */
 
 namespace WordCounter\Command;
 
+use WordCounter\Console\ConsoleRequest;
 
 interface CommandInterface
 {
     /**
-     * @param array $argv
+     * @param ConsoleRequest $consoleRequest
      *
      * @return string
      */
-    public function execute(array $argv);
+    public function execute(ConsoleRequest $consoleRequest);
 }

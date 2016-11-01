@@ -1,6 +1,7 @@
 <?php
 
 namespace WordCounter\Guesser;
+
 use WordCounter\Console\ConsoleRequest;
 
 /**
@@ -13,8 +14,8 @@ interface ConsoleInputGuesserInterface
 {
     /**
      * @param ConsoleRequest $consoleRequest
-     *
      * @param $attribute
+     *
      * @return string
      */
     public function guess(ConsoleRequest $consoleRequest, $attribute);

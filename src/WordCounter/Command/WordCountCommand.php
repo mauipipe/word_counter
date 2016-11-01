@@ -3,11 +3,10 @@
  * Created by IntelliJ IDEA.
  * User: mauilap
  * Date: 01/11/16
- * Time: 0.08
+ * Time: 0.08.
  */
 
 namespace WordCounter\Command;
-
 
 use WordCounter\Console\ConsoleRequest;
 use WordCounter\Exception\NotAllowedConsoleParamException;
@@ -38,15 +37,14 @@ class WordCountCommand implements CommandInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function execute(array $argv)
+    public function execute(ConsoleRequest $consoleRequest)
     {
         $rustart = getrusage();
-        $consoleRequest = new ConsoleRequest($argv);
-        $consoleArguments = $this->getArguments($argv);
-        $consoleValue = $this->consoleInputValueGuesser->guess($consoleArguments, $argv);
-        echo sprintf("running %s\n", $consoleValue);
+        $consoleValue = $this->consoleInputValueGuesser->guess($consoleRequest, self::SOURCE);
+
+        echo sprintf("Running %s\n", $consoleValue);
 
         $result = $this->wordCountService->orderByNameAndWord($consoleValue);
 
@@ -76,6 +74,7 @@ class WordCountCommand implements CommandInterface
      * @param array $argv
      *
      * @return string|null
+     *
      * @throws NotAllowedConsoleParamException
      */
     private function getArguments(array $argv)
@@ -91,10 +90,8 @@ class WordCountCommand implements CommandInterface
         }
 
         throw new NotAllowedConsoleParamException(
-            sprintf("missing mandatory parameter from %s", implode(',', $mandatoryParameters)
+            sprintf('missing mandatory parameter from %s', implode(',', $mandatoryParameters)
             )
         );
     }
-
-
 }

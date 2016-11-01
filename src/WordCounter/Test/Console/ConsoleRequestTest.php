@@ -35,11 +35,11 @@ class ConsoleRequestTest extends \PHPUnit_Framework_TestCase
 
         return [
             [
-                [1 => $consoleInputPrefix . self::ATTRIBUTE_FILE],
+                ['', $consoleInputPrefix . self::ATTRIBUTE_FILE],
                 self::ATTRIBUTE_FILE,
             ],
             [
-                [1 => $consoleInputPrefix . self::ATTRIBUTE_WIKIPEDIA_RAW_API],
+                ['', $consoleInputPrefix . self::ATTRIBUTE_WIKIPEDIA_RAW_API],
                 self::ATTRIBUTE_WIKIPEDIA_RAW_API,
             ],
         ];
@@ -54,7 +54,6 @@ class ConsoleRequestTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($consoleRequest->hasArguments());
     }
-
 
     /**
      * @test
@@ -80,7 +79,7 @@ class ConsoleRequestTest extends \PHPUnit_Framework_TestCase
     public function getsConsoleValueFromParameterExceptionWhenAndAttributeWithNoValueNameIsConsumed()
     {
         $mockArgv = [
-            1 => self::TEST_ATTRIBUTE,
+            '', 1 => self::TEST_ATTRIBUTE,
         ];
         $invalidConsumedAttribute = 'invalid';
 

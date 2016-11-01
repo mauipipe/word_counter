@@ -62,8 +62,7 @@ class CommandContext implements Context
                 return (int)$key - 1;
             }
         }
-
-        throw new RuntimeException(sprintf('invalid result %s'), $result);
+        return count($result);
     }
 
     /**

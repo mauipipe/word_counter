@@ -37,7 +37,7 @@ class DependencyHandler
                 return new WordCountService($c['stream_text_word.counter']);
             },
             'word_count.command'       => function ($c) {
-                return new WordCountCommand($c['word_count.service'], $c['console.request.factory']);
+                return new WordCountCommand($c['word_count.service'], $c['console_value.guesser']);
             },
         ];
 

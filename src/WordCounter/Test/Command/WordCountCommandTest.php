@@ -3,15 +3,15 @@
  * Created by IntelliJ IDEA.
  * User: mauilap
  * Date: 01/11/16
- * Time: 0.09
+ * Time: 0.09.
  */
 
 namespace WordCounter\Test\Command;
 
-
 use WordCounter\Command\CommandInterface;
 use WordCounter\Command\WordCountCommand;
 use WordCounter\Console\ConsoleRequest;
+use WordCounter\Guesser\ConsoleInputGuesserInterface;
 use WordCounter\Service\WordCountService;
 use WordCounter\Test\Helper\FixtureProvider;
 
@@ -21,9 +21,9 @@ class WordCountCommandTest extends \PHPUnit_Framework_TestCase
 
     const TEST_PARAMETER_VALUE = 'test_parameter_value';
     /**
-     * @var ConsoleRequest|\PHPUnit_Framework_MockObject_MockObject
+     * @var ConsoleInputGuesserInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $consoleRequest;
+    private $consoleInputGuesser;
     /**
      * @var WordCountService|\PHPUnit_Framework_MockObject_MockObject
      */
@@ -35,14 +35,14 @@ class WordCountCommandTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->consoleRequest = $this->getMockBuilder('WordCounter\Console\ConsoleRequest')
+        $this->consoleInputGuesser = $this->getMockBuilder('WordCounter\Guesser\ConsoleInputGuesserInterface')
             ->disableOriginalConstructor()
             ->getMock();
         $this->wordCountService = $this->getMockBuilder('WordCounter\Service\WordCountService')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->wordCountCommand = new WordCountCommand($this->wordCountService, $this->consoleRequest);
+        $this->wordCountCommand = new WordCountCommand($this->wordCountService, $this->consoleInputGuesser);
     }
 
     /**
@@ -55,17 +55,22 @@ class WordCountCommandTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $stubArgv = [
-            1 => WordCountCommand::SOURCE,
+            '',
+            WordCountCommand::SOURCE . ConsoleRequest::ATTRIBUTE_SEPARATOR . 'test',
         ];
 
-        $this->consoleRequest->expects($this->once())
-            ->method('getParameterValue')
+        $consoleRequest = new ConsoleRequest($stubArgv);
+
+        $this->consoleInputGuesser->expects($this->once())
+            ->method('guess')
+            ->with($consoleRequest, WordCountCommand::SOURCE)
             ->willReturn(self::TEST_PARAMETER_VALUE);
+
         $this->wordCountService->expects($this->once())
             ->method('orderByNameAndWord')
             ->with(self::TEST_PARAMETER_VALUE)
             ->willReturn($expectedResult);
 
-        $this->wordCountCommand->execute($stubArgv);
+        $this->wordCountCommand->execute($consoleRequest);
     }
 }

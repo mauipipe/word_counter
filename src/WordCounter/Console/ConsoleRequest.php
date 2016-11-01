@@ -15,7 +15,7 @@ use WordCounter\Guesser\ConsoleInputGuesserInterface;
 class ConsoleRequest
 {
     const STDIN = 'php://stdin';
-    const ATTRIBUTE_SEPARATOR = "=";
+    const ATTRIBUTE_SEPARATOR = '=';
 
     /**
      * @var ConsoleInputGuesserInterface
@@ -32,6 +32,7 @@ class ConsoleRequest
 
     /**
      * @param $key
+     *
      * @return mixed
      *
      * @throws UndefinedAttributeException
@@ -39,9 +40,18 @@ class ConsoleRequest
     public function getParameterValue($key)
     {
         if (!isset($this->argumentsValues[$key])) {
-            throw new UndefinedAttributeException('%s', $key);
+            throw new UndefinedAttributeException(sprintf('%s', $key));
         }
+
         return $this->argumentsValues[$key];
+    }
+
+    /**
+     * @return array
+     */
+    public function getParameterValues()
+    {
+        return $this->argumentsValues;
     }
 
     /**
@@ -49,19 +59,25 @@ class ConsoleRequest
      */
     public function hasArguments()
     {
-        return !empty($this->argumentsValues);
+        return count($this->argumentsValues) > 0;
     }
 
     /**
      * @param array $argumentValues
-     * @return mixed
+     *
+     * @return array
      *
      * @throws InvalidAttributeException
      */
     private function getConsoleInputs(array $argumentValues)
     {
         $consoleInputs = [];
-        foreach ($argumentValues as $argumentValue) {
+
+        if (count($argumentValues) <= 1) {
+            return $consoleInputs;
+        }
+
+        foreach (array_splice($argumentValues, 1) as $argumentValue) {
             if (false === strpos($argumentValue, self::ATTRIBUTE_SEPARATOR)) {
                 throw new InvalidAttributeException($argumentValue);
             }

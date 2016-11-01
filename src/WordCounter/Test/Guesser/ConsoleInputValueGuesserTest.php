@@ -8,12 +8,14 @@
 
 namespace WordCounter\Test\Guesser;
 
+use WordCounter\Console\ConsoleRequest;
 use WordCounter\Guesser\ConsoleInputGuesserInterface;
 use WordCounter\Guesser\ConsoleInputValueGuesser;
 use WordCounter\Test\Console\ConsoleRequestTest;
 
 class ConsoleInputValueGuesserTest extends \PHPUnit_Framework_TestCase
 {
+    const TEST_ATTRIBUTE = '--foo';
     /**
      * @var ConsoleInputGuesserInterface
      */
@@ -29,12 +31,13 @@ class ConsoleInputValueGuesserTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider consoleInputProvider
      *
-     * @param string $consoleInputValue
+     * @param string $consoleInputValues
      * @param string $expectedResult
      */
-    public function guessValueForProvidedType($consoleInputValue, $expectedResult)
+    public function guessValueForProvidedType($consoleInputValues, $expectedResult)
     {
-        $result = $this->consoleInputValueGuesser->guess($consoleInputValue);
+        $consoleRequest = new ConsoleRequest($consoleInputValues);
+        $result = $this->consoleInputValueGuesser->guess($consoleRequest, self::TEST_ATTRIBUTE);
 
         $this->assertEquals($expectedResult, $result);
     }
@@ -45,13 +48,20 @@ class ConsoleInputValueGuesserTest extends \PHPUnit_Framework_TestCase
     public function consoleInputProvider()
     {
         return [
+            //file input
             [
-                ConsoleRequestTest::ATTRIBUTE_FILE,
+                ['', self::TEST_ATTRIBUTE . ConsoleRequest::ATTRIBUTE_SEPARATOR . ConsoleRequestTest::ATTRIBUTE_FILE],
                 '/srv/apps/word_counter/src/WordCounter/Guesser/../../../src/WordCounter/Test/fixtures/test.txt',
             ],
+            //Wikipedia Raw Api
             [
+                ['', self::TEST_ATTRIBUTE . ConsoleRequest::ATTRIBUTE_SEPARATOR . ConsoleRequestTest::ATTRIBUTE_WIKIPEDIA_RAW_API],
                 ConsoleRequestTest::ATTRIBUTE_WIKIPEDIA_RAW_API,
-                ConsoleRequestTest::ATTRIBUTE_WIKIPEDIA_RAW_API,
+            ],
+            //Wikipedia Raw Api
+            [
+                [''],
+                ConsoleInputValueGuesser::STDIN,
             ],
         ];
     }

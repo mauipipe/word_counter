@@ -6,7 +6,7 @@ Feature:
   @word_counter @internal_file @small
   Scenario: retrieve word occurrences from an internal file source
     Given there is a "small_text.txt" in my system
-    When the "php" command "/../../bin/count_word.php --source=resources/small_text.txt"
+    When the "php" command "/../../bin/count_word.php --source=features/fixtures/small_text.txt"
     Then the result would be equal to:
     """
     mozart=7
@@ -290,7 +290,7 @@ Feature:
 
   @word_counter @stdin @nightly
   Scenario: retrieve word occurrences from stdin ordered by frequence and name
-    When value "/fixtures/small_text.txt" is piped "php" command "/../../bin/count_word.php --source=stdin"
+    When value "/fixtures/small_text.txt" is piped "php" command "/../../bin/count_word.php"
     Then the result would be equal to:
     """
     mozart=7

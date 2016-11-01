@@ -16,23 +16,24 @@ class ConsoleInputValueGuesser implements ConsoleInputGuesserInterface
     const STDIN = 'php://stdin';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function guess(ConsoleRequest $consoleRequest, $attribute)
     {
-        if (false === $consoleRequest->hasArguments()) {
+        if ($this->isStdin($consoleRequest)) {
             return self::STDIN;
         }
+
         $value = $consoleRequest->getParameterValue($attribute);
         $filePath = __DIR__ . '/../../../' . $value;
 
         if ($this->isFile($filePath)) {
             return $filePath;
-        } elseif ($this->isWikipediaRawApiUrl($consoleRequest)) {
+        } elseif ($this->isWikipediaRawApiUrl($value)) {
             return $value;
         }
 
-        throw new UndefinedInputValueException(sprintf('invalid console value %s', $consoleRequest));
+        throw new UndefinedInputValueException(sprintf('invalid console value %s', implode(',', $consoleRequest->getParameterValues())));
     }
 
     /**
@@ -60,5 +61,15 @@ class ConsoleInputValueGuesser implements ConsoleInputGuesserInterface
 
         return 'raw' === $query['action'] &&
         'en.wikipedia.org' === $parts['host'];
+    }
+
+    /**
+     * @param ConsoleRequest $consoleRequest
+     *
+     * @return bool
+     */
+    private function isStdin(ConsoleRequest $consoleRequest)
+    {
+        return !$consoleRequest->hasArguments();
     }
 }
