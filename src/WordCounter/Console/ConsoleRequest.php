@@ -8,56 +8,68 @@
 
 namespace WordCounter\Console;
 
+use WordCounter\Exception\InvalidAttributeException;
 use WordCounter\Exception\UndefinedAttributeException;
 use WordCounter\Guesser\ConsoleInputGuesserInterface;
 
 class ConsoleRequest
 {
-    const ATTRIBUTE_SEPARATOR = '=';
     const STDIN = 'php://stdin';
+    const ATTRIBUTE_SEPARATOR = "=";
 
     /**
      * @var ConsoleInputGuesserInterface
      */
-    private $consoleInputGuesser;
+    private $argumentsValues;
 
     /**
-     * @param ConsoleInputGuesserInterface $consoleInputGuesser
+     * @param array $argumentsValues
      */
-    public function __construct(ConsoleInputGuesserInterface $consoleInputGuesser)
+    public function __construct(array $argumentsValues)
     {
-        $this->consoleInputGuesser = $consoleInputGuesser;
+        $this->argumentsValues = $this->getConsoleInputs($argumentsValues);
     }
 
     /**
-     * @param string $key
-     * @param array $argv
-     *
-     * @return string
-     */
-    public function getParameterValue($key, array $argv)
-    {
-        $consoleInput = $this->getConsoleInput($key, $argv[1]);
-        return $this->consoleInputGuesser->guess($consoleInput);
-    }
-
-    /**
-     * @param string $key
-     * @param string $value
-     *
+     * @param $key
      * @return mixed
      *
      * @throws UndefinedAttributeException
      */
-    private function getConsoleInput($key, $value)
+    public function getParameterValue($key)
     {
-        if (false === strpos($value, $key)) {
-            throw new UndefinedAttributeException(sprintf('cannot find attribute %s', $key));
+        if (!isset($this->argumentsValues[$key])) {
+            throw new UndefinedAttributeException('%s', $key);
+        }
+        return $this->argumentsValues[$key];
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasArguments()
+    {
+        return !empty($this->argumentsValues);
+    }
+
+    /**
+     * @param array $argumentValues
+     * @return mixed
+     *
+     * @throws InvalidAttributeException
+     */
+    private function getConsoleInputs(array $argumentValues)
+    {
+        $consoleInputs = [];
+        foreach ($argumentValues as $argumentValue) {
+            if (false === strpos($argumentValue, self::ATTRIBUTE_SEPARATOR)) {
+                throw new InvalidAttributeException($argumentValue);
+            }
+
+            list($argument, $value) = explode(self::ATTRIBUTE_SEPARATOR, $argumentValue, 2);
+            $consoleInputs[$argument] = $value;
         }
 
-        $consoleInput = str_replace($key . self::ATTRIBUTE_SEPARATOR, '', $value);
-        $consoleInput = str_replace('--', '', $consoleInput);
-
-        return $consoleInput;
+        return $consoleInputs;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace WordCounter\Guesser;
+use WordCounter\Console\ConsoleRequest;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,9 +12,10 @@ namespace WordCounter\Guesser;
 interface ConsoleInputGuesserInterface
 {
     /**
-     * @param $consoleInput
+     * @param ConsoleRequest $consoleRequest
      *
-     * @return mixed
+     * @param $attribute
+     * @return string
      */
-    public function guess($consoleInput);
+    public function guess(ConsoleRequest $consoleRequest, $attribute);
 }

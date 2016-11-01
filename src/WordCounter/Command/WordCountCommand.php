@@ -25,16 +25,16 @@ class WordCountCommand implements CommandInterface
     /**
      * @var ConsoleInputGuesserInterface
      */
-    private $consoleRequest;
+    private $consoleInputValueGuesser;
 
     /**
      * @param WordCountService $wordCountService
-     * @param ConsoleRequest $consoleRequest
+     * @param ConsoleInputGuesserInterface $consoleInputValueGuesser
      */
-    public function __construct(WordCountService $wordCountService, ConsoleRequest $consoleRequest)
+    public function __construct(WordCountService $wordCountService, ConsoleInputGuesserInterface $consoleInputValueGuesser)
     {
         $this->wordCountService = $wordCountService;
-        $this->consoleRequest = $consoleRequest;
+        $this->consoleInputValueGuesser = $consoleInputValueGuesser;
     }
 
     /**
@@ -43,8 +43,9 @@ class WordCountCommand implements CommandInterface
     public function execute(array $argv)
     {
         $rustart = getrusage();
+        $consoleRequest = new ConsoleRequest($argv);
         $consoleArguments = $this->getArguments($argv);
-        $consoleValue = $this->consoleRequest->getParameterValue($consoleArguments, $argv);
+        $consoleValue = $this->consoleInputValueGuesser->guess($consoleArguments, $argv);
         echo sprintf("running %s\n", $consoleValue);
 
         $result = $this->wordCountService->orderByNameAndWord($consoleValue);

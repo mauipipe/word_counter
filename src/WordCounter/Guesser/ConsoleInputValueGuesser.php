@@ -13,26 +13,26 @@ use WordCounter\Exception\UndefinedInputValueException;
  */
 class ConsoleInputValueGuesser implements ConsoleInputGuesserInterface
 {
+    const STDIN = 'php://stdin';
+
     /**
-     * @param string $consoleInput
-     *
-     * @return string
-     *
-     * @throws UndefinedInputValueException
+     * @inheritdoc
      */
-    public function guess($consoleInput)
+    public function guess(ConsoleRequest $consoleRequest, $attribute)
     {
-        $filePath = __DIR__ . '/../../../' . $consoleInput;
+        if (false === $consoleRequest->hasArguments()) {
+            return self::STDIN;
+        }
+        $value = $consoleRequest->getParameterValue($attribute);
+        $filePath = __DIR__ . '/../../../' . $value;
 
         if ($this->isFile($filePath)) {
             return $filePath;
-        } elseif ($this->isWikipediaRawApiUrl($consoleInput)) {
-            return $consoleInput;
-        } elseif ('stdin' === $consoleInput) {
-            return ConsoleRequest::STDIN;
+        } elseif ($this->isWikipediaRawApiUrl($consoleRequest)) {
+            return $value;
         }
 
-        throw new UndefinedInputValueException(sprintf('invalid console value %s', $consoleInput));
+        throw new UndefinedInputValueException(sprintf('invalid console value %s', $consoleRequest));
     }
 
     /**
