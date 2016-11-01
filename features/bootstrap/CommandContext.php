@@ -40,13 +40,13 @@ class CommandContext implements Context
     public function theResultWouldBeEqualTo(PyStringNode $expectedResponse)
     {
         $expectedResult = explode("\n", trim($expectedResponse->getRaw()));
-        $result = explode("\n", trim($this->commandResponse));
 
-        $result = array_slice($result, 1, $this->getResultMaxLimit($result));
+        $result = $this->getResult();
 
         PHPUnit_Framework_Assert::assertSame(
+            $result,
             $expectedResult,
-            $result
+            implode(',', array_diff($expectedResult, $result))
         );
     }
 
@@ -81,5 +81,25 @@ class CommandContext implements Context
     {
         $currentDir = __DIR__ . '/../' . $arg1;
         $this->commandResponse = shell_exec(sprintf('(cat %s | %s %s)', $currentDir, $arg2, __DIR__ . $arg3));
+    }
+
+    /**
+     * @return array
+     */
+    private function getResult()
+    {
+        $commandResponse = trim(str_replace("\n", ' ', $this->commandResponse));
+        $result = explode(" ", $commandResponse);
+        $slicedResult = array_slice($result, 2, $this->getResultMaxLimit($result) - 1);
+        return $slicedResult;
+    }
+
+    /**
+     * @When print console response
+     */
+    public function printConsoleResponse2()
+    {
+        echo implode("\n", $this->getResult());
+        die;
     }
 }

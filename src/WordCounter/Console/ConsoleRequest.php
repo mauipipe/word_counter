@@ -17,11 +17,7 @@ class ConsoleRequest
     const STDIN = 'php://stdin';
 
     /**
-     * @var array
-     */
-    private $consoleArguments;
-    /**
-     * @var \ConsoleInputGuesserInterface
+     * @var ConsoleInputGuesserInterface
      */
     private $consoleInputGuesser;
 
@@ -41,20 +37,8 @@ class ConsoleRequest
      */
     public function getParameterValue($key, array $argv)
     {
-        if (!isset($argv[1]) && $this->hasPipedValue()) {
-            return self::STDIN;
-        }
         $consoleInput = $this->getConsoleInput($key, $argv[1]);
-
         return $this->consoleInputGuesser->guess($consoleInput);
-    }
-
-    private function hasPipedValue()
-    {
-        $handle = fopen(self::STDIN, 'r');
-        fclose($handle);
-
-        return $handle;
     }
 
     /**

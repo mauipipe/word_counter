@@ -1,17 +1,20 @@
 <?php
+
 namespace WordCounter\Container;
 
 use Pimple\Container;
+use WordCounter\Command\WordCountCommand;
 use WordCounter\Console\ConsoleRequest;
 use WordCounter\Counter\StreamTextWordCounter;
 use WordCounter\Factory\SplFileObjectFactory;
 use WordCounter\Guesser\ConsoleInputValueGuesser;
+use WordCounter\Service\WordCountService;
 
 /**
  * Created by IntelliJ IDEA.
  * User: mauilap
  * Date: 31/10/16
- * Time: 18.12
+ * Time: 18.12.
  */
 class DependencyHandler
 {
@@ -29,6 +32,12 @@ class DependencyHandler
             },
             'stream_text_word.counter' => function ($c) {
                 return new StreamTextWordCounter($c['spl_file_object.factory']);
+            },
+            'word_count.service'       => function ($c) {
+                return new WordCountService($c['stream_text_word.counter']);
+            },
+            'word_count.command'       => function ($c) {
+                return new WordCountCommand($c['word_count.service'], $c['console.request.factory']);
             },
         ];
 

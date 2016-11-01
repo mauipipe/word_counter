@@ -5,6 +5,7 @@ namespace WordCounter\Test\Chain\Handler;
 use WordCounter\Counter\CounterInterface;
 use WordCounter\Counter\StreamTextWordCounter;
 use WordCounter\Factory\SplFileObjectFactoryInterface;
+use WordCounter\Test\Helper\FixtureProvider;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,6 +15,8 @@ use WordCounter\Factory\SplFileObjectFactoryInterface;
  */
 class StreamTextWordCounterTest extends \PHPUnit_Framework_TestCase
 {
+    use FixtureProvider;
+
     const TEST_SOURCE = 'test path';
 
     /**
@@ -57,14 +60,14 @@ class StreamTextWordCounterTest extends \PHPUnit_Framework_TestCase
         $fileObjectMock->expects($this->once())
             ->method('next');
 
-        $expectedResult = [
+        $expectedResult = $this->getHydratedMockWordCounts([
             'foo' => 2,
             'zen' => 2,
             'bar' => 1,
             'pon' => 1,
             'ten' => 1,
             'test' => 1,
-        ];
+        ]);
 
         $result = $this->streamTextWordCounter->getCounts(self::TEST_SOURCE, function () {
         });

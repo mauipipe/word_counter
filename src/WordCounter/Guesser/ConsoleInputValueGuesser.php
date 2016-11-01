@@ -2,6 +2,7 @@
 
 namespace WordCounter\Guesser;
 
+use WordCounter\Console\ConsoleRequest;
 use WordCounter\Exception\UndefinedInputValueException;
 
 /**
@@ -27,6 +28,8 @@ class ConsoleInputValueGuesser implements ConsoleInputGuesserInterface
             return $filePath;
         } elseif ($this->isWikipediaRawApiUrl($consoleInput)) {
             return $consoleInput;
+        } elseif ('stdin' === $consoleInput) {
+            return ConsoleRequest::STDIN;
         }
 
         throw new UndefinedInputValueException(sprintf('invalid console value %s', $consoleInput));

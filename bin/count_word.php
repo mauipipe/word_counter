@@ -8,28 +8,26 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use WordCounter\Container\DependencyHandler;
-use WordCounter\Factory\StreamTextWordCounterFactory;
+use WordCounter\Guesser\ConsoleInputGuesserInterface;
+use WordCounter\Service\WordCountService;
 
 const SOURCE = 'source';
 
 $rustart = getrusage();
+
 $container = DependencyHandler::getContainer();
-/** @var \WordCounter\Guesser\ConsoleInputGuesserInterface $guesser */
-
+/** @var ConsoleInputGuesserInterface $guesser */
 $consoleRequest = $container->offsetGet('console.request.factory');
-$wordCounter = $container->offsetGet('stream_text_word.counter');
+/** @var WordCountService $wordCountService */
+$wordCountService = $container->offsetGet('word_count.service');
 
-$source = $consoleRequest->getParameterValue(SOURCE, $argv);
-echo sprintf("running %s\n", $source);
+$consoleInput = $consoleRequest->getParameterValue(SOURCE, $argv);
+echo sprintf("running %s\n", $consoleInput);
 
-$result = $wordCounter->getCounts($source, function ($counter) {
-    if ($counter % 8192 === 0) {
-        echo ".";
-    }
-});
+$result = $wordCountService->orderByNameAndWord($consoleInput);
 
-foreach ($result as $key => $value) {
-    echo sprintf("%s=%d\n", $key, $value);
+foreach ($result as $wordCount) {
+    echo sprintf("%s=%d\n", $wordCount->getWord(), $wordCount->getCount());
 }
 
 // Script end

@@ -8,12 +8,14 @@
 
 namespace WordCounter\Counter;
 
+use WordCounter\Model\WordCount;
+
 interface CounterInterface
 {
     /**
      * @param string $source
      *
-     * @return array
+     * @return WordCount[]
      */
     public function getCounts($source, \Closure $func);
 }
