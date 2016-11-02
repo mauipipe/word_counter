@@ -16,6 +16,8 @@ use WordCounter\Service\WordCountService;
 class WordCountCommand implements CommandInterface
 {
     const SOURCE = '--source';
+    const RANDOM = '--random';
+    const STDIN = 'stdin';
 
     /**;
      * @var WordCountService
@@ -25,6 +27,14 @@ class WordCountCommand implements CommandInterface
      * @var ConsoleInputGuesserInterface
      */
     private $consoleInputValueGuesser;
+
+    /**
+     * @var array
+     */
+    private static $allowedArguments = [
+        self::SOURCE,
+        self::RANDOM,
+    ];
 
     /**
      * @param WordCountService $wordCountService
@@ -39,10 +49,10 @@ class WordCountCommand implements CommandInterface
     /**
      * {@inheritdoc}
      */
-    public function execute(ConsoleRequest $consoleRequest)
+    public function createRandomFile(ConsoleRequest $consoleRequest)
     {
         $rustart = getrusage();
-        $consoleValue = $this->consoleInputValueGuesser->guess($consoleRequest, self::SOURCE);
+        $consoleValue = $this->consoleInputValueGuesser->guess($consoleRequest);
 
         echo sprintf("Running %s\n", $consoleValue);
 
@@ -52,23 +62,9 @@ class WordCountCommand implements CommandInterface
             echo sprintf("%s=%d\n", $wordCount->getWord(), $wordCount->getCount());
         }
 
-        function rutime($ru, $rus, $index)
-        {
-            return ($ru["ru_$index.tv_sec"] * 1000 + intval($ru["ru_$index.tv_usec"] / 1000))
-            - ($rus["ru_$index.tv_sec"] * 1000 + intval($rus["ru_$index.tv_usec"] / 1000));
-        }
-
-        $ru = getrusage();
-        $d = new \DateTime();
-        $seconds = rutime($ru, $rustart, 'utime') / 1000;
-        echo "\nThis process used " . $seconds .
-            "sec for its computations\n";
-        echo 'It spent ' . rutime($ru, $rustart, 'stime') .
-            " ms in system calls\n";
-
-        echo sprintf("real Usage %s\n", memory_get_peak_usage(true));
-        echo sprintf("peak usage %s\n", memory_get_peak_usage());
+        $this->printUsage($rustart);
     }
+
 
     /**
      * @param array $argv
@@ -93,5 +89,46 @@ class WordCountCommand implements CommandInterface
             sprintf('missing mandatory parameter from %s', implode(',', $mandatoryParameters)
             )
         );
+    }
+
+    /**
+     * @param array $rustart
+     */
+    private function printUsage(array $rustart)
+    {
+        function rutime($ru, $rus, $index)
+        {
+            return ($ru["ru_$index.tv_sec"] * 1000 + intval($ru["ru_$index.tv_usec"] / 1000))
+            - ($rus["ru_$index.tv_sec"] * 1000 + intval($rus["ru_$index.tv_usec"] / 1000));
+        }
+
+        $ru = getrusage();
+        $seconds = rutime($ru, $rustart, 'utime') / 1000;
+        echo "\nThis process used " . $seconds .
+            "sec for its computations\n";
+        echo 'It spent ' . rutime($ru, $rustart, 'stime') .
+            " ms in system calls\n";
+
+        echo sprintf("real Usage %s\n", memory_get_peak_usage(true));
+        echo sprintf("peak usage %s\n", memory_get_peak_usage());
+    }
+
+    /**
+     * @param ConsoleRequest $consoleRequest
+     * @return string|null
+     */
+    private function getAttribute(ConsoleRequest $consoleRequest)
+    {
+        if (!$consoleRequest->hasArguments()) {
+            return self::STDIN;
+        }
+
+        foreach (self::$allowedArguments as $allowedArgument) {
+            if ($consoleRequest->hasArgument($allowedArgument)) {
+                return $allowedArgument;
+            }
+        }
+
+        throw new \OutOfBoundsException('cannot find valid attribute');
     }
 }

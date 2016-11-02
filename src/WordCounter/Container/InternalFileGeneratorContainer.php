@@ -28,14 +28,14 @@ class InternalFileGeneratorContainer
         self::DICTIONARY => FIleExtension::TXT,
     ];
     /**
-     * @var string
+     * @var string|null
      */
     private $env;
 
     /**
-     * @param string $env
+     * @param string|null $env
      */
-    public function __construct($env)
+    public function __construct($env = null)
     {
         $this->env = $env;
     }
@@ -53,12 +53,12 @@ class InternalFileGeneratorContainer
 
         switch (self::$fileTypeReaderMapper[$fileType]) {
             case FIleExtension::TXT:
-                $fullFilePath = $this->getFullFilePath($this->getRootFolderByEnv(App::getRootDir()), $fileType);
+                $fullFilePath = $this->getFullFilePath($this->getRootFolderByEnv(App::getRootDir()), self::RESOURCE_FOLDER, $fileType);
                 $dictionary = file_get_contents($fullFilePath);
-                $result = new Dictionary(explode(",", $dictionary));
+                $result = new Dictionary($dictionary);
                 break;
             case FIleExtension::JSON:
-                $fullFilePath = $this->getFullFilePath($this->getRootFolderByEnv(App::getSrcDir()), $fileType);
+                $fullFilePath = $this->getFullFilePath($this->getRootFolderByEnv(App::getRootDir()), 'config/', $fileType);
                 $fileContent = file_get_contents($fullFilePath);
                 $result = new Config(json_decode($fileContent, true));
                 break;
@@ -77,7 +77,7 @@ class InternalFileGeneratorContainer
      */
     private function getRootFolderByEnv($prodDir)
     {
-        if (Environment::TEST === $this->env) {
+        if (null !== $this->env && Environment::TEST === $this->env) {
             return App::getTestDir();
         }
 
@@ -86,14 +86,13 @@ class InternalFileGeneratorContainer
 
     /**
      * @param string $srcDir
+     * @param string $resourceFolder
      * @param string $fileType
      * @return string
      */
-    private function getFullFilePath($srcDir, $fileType)
+    private function getFullFilePath($srcDir, $resourceFolder, $fileType)
     {
-        $resourceFolder = self::RESOURCE_FOLDER;
-
-        if (Environment::TEST === $this->env) {
+        if (null !== $this->env && Environment::TEST === $this->env) {
             $resourceFolder = self::TEST_FILE_FOLDER;
         }
         $fullFilePath = sprintf(

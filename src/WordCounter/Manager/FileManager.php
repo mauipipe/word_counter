@@ -1,108 +1,77 @@
 <?php
-
-namespace WordCounter\Manager;
-
-use WordCounter\App\App;
-use WordCounter\Enum\Environment;
-use WordCounter\Enum\FIleExtension;
-use WordCounter\Model\Config;
-use WordCounter\Model\Dictionary;
-use WordCounter\Model\InternalResourceSerializerInterface;
-
 /**
  * Created by IntelliJ IDEA.
  * User: mauilap
- * Date: 29/10/16
- * Time: 18.34.
+ * Date: 02/11/16
+ * Time: 10.58
  */
+
+namespace WordCounter\Manager;
+
+
+use WordCounter\App\App;
+use WordCounter\Container\InternalFileGeneratorContainer;
+use WordCounter\Model\Config;
+use WordCounter\Model\Dictionary;
+
 class FileManager
 {
-    const RESOURCE_FOLDER = 'resources/';
-    const TEST_FILE_FOLDER = 'fixtures/';
-    const FULL_PATH = '%s%s%s.%s';
-    const CONFIG = 'config';
-    const DICTIONARY = 'dictionary';
 
-    private static $fileTypeReaderMapper = [
-        self::CONFIG     => FIleExtension::JSON,
-        self::DICTIONARY => FIleExtension::TXT,
-    ];
-    /**
-     * @var string
-     */
-    private $env;
+    const RANDOM_FILE_PATH = 'random_file_path';
 
     /**
-     * @param string $env
+     * @var Config
      */
-    public function __construct($env)
+    private $config;
+    /**
+     * @var Dictionary
+     */
+    private $dictionary;
+
+    /**
+     * @param InternalFileGeneratorContainer $fileGeneratorContainer
+     */
+    public function __construct(InternalFileGeneratorContainer $fileGeneratorContainer)
     {
-        $this->env = $env;
+        $this->config = $fileGeneratorContainer->getFileType(InternalFileGeneratorContainer::CONFIG);
+        $this->dictionary = $fileGeneratorContainer->getFileType(InternalFileGeneratorContainer::DICTIONARY);
     }
 
     /**
-     * @param $fileType
-     *
-     * @return InternalResourceSerializerInterface
-     */
-    public function getFileType($fileType)
-    {
-        if (!isset(self::$fileTypeReaderMapper[$fileType])) {
-            throw new \OutOfBoundsException(sprintf("invalid file type consumed %s", $fileType));
-        }
-
-        switch (self::$fileTypeReaderMapper[$fileType]) {
-            case FIleExtension::TXT:
-                $fullFilePath = $this->getFullFilePath($this->getRootFolderByEnv(App::getRootDir()), $fileType);
-                $dictionary = file_get_contents($fullFilePath);
-                $result = new Dictionary(explode(",", $dictionary));
-                break;
-            case FIleExtension::JSON:
-                $fullFilePath = $this->getFullFilePath($this->getRootFolderByEnv(App::getSrcDir()), $fileType);
-                $fileContent = file_get_contents($fullFilePath);
-                $result = new Config(json_decode($fileContent, true));
-                break;
-            default:
-                throw new \OutOfBoundsException(sprintf("invalid file extension added %s", $fileType));
-                break;
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param string $prodDir
+     * @param string $fileSize
      *
      * @return string
      */
-    private function getRootFolderByEnv($prodDir)
+    public function createRandomFile($fileSize)
     {
-        if (Environment::TEST === $this->env) {
-            return App::getTestDir();
+        $randomFileName = $this->getRandomFilePath();
+
+        if (is_file($randomFileName)) {
+            unlink($randomFileName);
         }
 
-        return $prodDir;
+        $randomFile = new \SplFileObject($randomFileName, 'a+');
+        $bytesAdded = 0;
+        $dictionarySize = $this->dictionary->getSize();
+
+        while ($bytesAdded < $fileSize) {
+            $randDomIndex = rand(0, $dictionarySize);
+            $randomWord = $this->dictionary->getValue($randDomIndex);
+            $randomFile->fwrite($randomWord . " ");
+
+            $bytesAdded += strlen($randomWord);
+
+
+            $randomFile->next();
+        }
     }
 
     /**
-     * @param string $srcDir
-     * @param string $fileType
      * @return string
      */
-    private function getFullFilePath($srcDir, $fileType)
+    public function getRandomFilePath()
     {
-        $resourceFolder = self::RESOURCE_FOLDER;
-
-        if (Environment::TEST === $this->env) {
-            $resourceFolder = self::TEST_FILE_FOLDER;
-        }
-        $fullFilePath = sprintf(
-            self::FULL_PATH,
-            $srcDir,
-            $resourceFolder,
-            $fileType,
-            self::$fileTypeReaderMapper[$fileType]
-        );
-        return $fullFilePath;
+        return App::getRootDir() . $this->config->getValue(self::RANDOM_FILE_PATH);
     }
+
 }

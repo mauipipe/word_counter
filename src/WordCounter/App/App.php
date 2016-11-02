@@ -12,9 +12,11 @@ namespace WordCounter\App;
 use Pimple\Container;
 use WordCounter\Command\WordCountCommand;
 use WordCounter\Console\ConsoleRequest;
+use WordCounter\Container\InternalFileGeneratorContainer;
 use WordCounter\Counter\StreamTextWordCounter;
 use WordCounter\Factory\SplFileObjectFactory;
 use WordCounter\Guesser\ConsoleInputValueGuesser;
+use WordCounter\Manager\FileManager;
 use WordCounter\Service\WordCountService;
 
 class App
@@ -48,23 +50,29 @@ class App
     public static function getContainer()
     {
         $config = [
-            'console_value.guesser'    => function () {
-                return new ConsoleInputValueGuesser();
+            'console_value.guesser'          => function ($c) {
+                return new ConsoleInputValueGuesser($c['file.manager']);
             },
-            'console.request.factory'  => function ($c) {
+            'console.request.factory'        => function ($c) {
                 return new ConsoleRequest($c['console_value.guesser']);
             },
-            'spl_file_object.factory'  => function () {
+            'spl_file_object.factory'        => function () {
                 return new SplFileObjectFactory();
             },
-            'stream_text_word.counter' => function ($c) {
+            'stream_text_word.counter'       => function ($c) {
                 return new StreamTextWordCounter($c['spl_file_object.factory']);
             },
-            'word_count.service'       => function ($c) {
+            'word_count.service'             => function ($c) {
                 return new WordCountService($c['stream_text_word.counter']);
             },
-            'word_count.command'       => function ($c) {
+            'word_count.command'             => function ($c) {
                 return new WordCountCommand($c['word_count.service'], $c['console_value.guesser']);
+            },
+            'internal_file_loader.container' => function ($c) {
+                return new InternalFileGeneratorContainer();
+            },
+            'file.manager'                   => function ($c) {
+                return new FileManager($c['internal_file_loader.container']);
             },
         ];
 

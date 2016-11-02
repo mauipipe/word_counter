@@ -63,7 +63,7 @@ class WordCountCommandTest extends \PHPUnit_Framework_TestCase
 
         $this->consoleInputGuesser->expects($this->once())
             ->method('guess')
-            ->with($consoleRequest, WordCountCommand::SOURCE)
+            ->with($consoleRequest)
             ->willReturn(self::TEST_PARAMETER_VALUE);
 
         $this->wordCountService->expects($this->once())
@@ -71,6 +71,6 @@ class WordCountCommandTest extends \PHPUnit_Framework_TestCase
             ->with(self::TEST_PARAMETER_VALUE)
             ->willReturn($expectedResult);
 
-        $this->wordCountCommand->execute($consoleRequest);
+        $this->wordCountCommand->createRandomFile($consoleRequest);
     }
 }

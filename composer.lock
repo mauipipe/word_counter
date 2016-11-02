@@ -1725,7 +1725,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Symfony\\Component\\Config\\": ""
+                    "Symfony\\Component\\ConfigTest\\": ""
                 },
                 "exclude-from-classmap": [
                     "/Tests/"
@@ -1745,7 +1745,7 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Symfony Config Component",
+            "description": "Symfony ConfigTest Component",
             "homepage": "https://symfony.com",
             "time": "2016-09-25 08:27:07"
         },

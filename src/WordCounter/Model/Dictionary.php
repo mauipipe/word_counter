@@ -8,24 +8,21 @@
 
 namespace WordCounter\Model;
 
-
-class Dictionary implements InternalResourceSerializerInterface
+class Dictionary extends AbstractInternalFile
 {
-    private $dictionaryData;
+    const DICTIONARY_SEPARATOR = ',';
 
     /**
-     * @param array $dictionaryData
+     * @param string $dictionary
      */
-    public function __construct($dictionaryData)
+    public function __construct($dictionary)
     {
-        $this->dictionaryData = $dictionaryData;
+        parent::__construct(explode(self::DICTIONARY_SEPARATOR, $dictionary));
     }
 
-    /**
-     * @return array;
-     */
-    public function serialize()
+
+    public function getSize()
     {
-        return $this->dictionaryData;
+        return count($this->internalFileData) - 1;
     }
 }

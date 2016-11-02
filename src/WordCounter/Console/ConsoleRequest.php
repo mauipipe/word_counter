@@ -63,6 +63,15 @@ class ConsoleRequest
     }
 
     /**
+     * @return bool
+     */
+    public function isStdin()
+    {
+        return !count($this->argumentsValues) > 0;
+
+    }
+
+    /**
      * @param array $argumentValues
      *
      * @return array

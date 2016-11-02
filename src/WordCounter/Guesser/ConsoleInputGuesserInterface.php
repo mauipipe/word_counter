@@ -14,9 +14,8 @@ interface ConsoleInputGuesserInterface
 {
     /**
      * @param ConsoleRequest $consoleRequest
-     * @param $attribute
      *
      * @return string
      */
-    public function guess(ConsoleRequest $consoleRequest, $attribute);
+    public function guess(ConsoleRequest $consoleRequest);
 }

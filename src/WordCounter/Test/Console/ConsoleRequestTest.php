@@ -9,10 +9,10 @@
 namespace WordCounter\Test\Console;
 
 use WordCounter\Console\ConsoleRequest;
+use WordCounter\Test\Enum\ConfigTest;
 
 class ConsoleRequestTest extends \PHPUnit_Framework_TestCase
 {
-    const ATTRIBUTE_FILE = 'src/WordCounter/Test/fixtures/test.txt';
     const ATTRIBUTE_WIKIPEDIA_RAW_API = 'https://en.wikipedia.org/w/index.php?title=test&action=raw';
     const TEST_ATTRIBUTE = '--bar';
 
@@ -35,8 +35,8 @@ class ConsoleRequestTest extends \PHPUnit_Framework_TestCase
 
         return [
             [
-                ['', $consoleInputPrefix . self::ATTRIBUTE_FILE],
-                self::ATTRIBUTE_FILE,
+                ['', $consoleInputPrefix . ConfigTest::ATTRIBUTE_FILE],
+                ConfigTest::ATTRIBUTE_FILE,
             ],
             [
                 ['', $consoleInputPrefix . self::ATTRIBUTE_WIKIPEDIA_RAW_API],

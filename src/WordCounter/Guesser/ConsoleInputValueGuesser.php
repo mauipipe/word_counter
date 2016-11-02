@@ -2,8 +2,11 @@
 
 namespace WordCounter\Guesser;
 
+use WordCounter\App\App;
 use WordCounter\Console\ConsoleRequest;
+use WordCounter\Enum\ConsoleAttributes;
 use WordCounter\Exception\UndefinedInputValueException;
+use WordCounter\Manager\FileManager;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,21 +19,46 @@ class ConsoleInputValueGuesser implements ConsoleInputGuesserInterface
     const STDIN = 'php://stdin';
 
     /**
+     * @var
+     */
+    private $fileManager;
+
+    /**
+     * @param FileManager $fileManager
+     */
+    public function __construct(FileManager $fileManager)
+    {
+        $this->fileManager = $fileManager;
+    }
+
+    /**
      * {@inheritdoc}
      */
-    public function guess(ConsoleRequest $consoleRequest, $attribute)
+    public function guess(ConsoleRequest $consoleRequest)
     {
-        if ($this->isStdin($consoleRequest)) {
+        if ($consoleRequest->isStdin()) {
             return self::STDIN;
         }
 
-        $value = $consoleRequest->getParameterValue($attribute);
-        $filePath = __DIR__ . '/../../../' . $value;
+        $values = $consoleRequest->getParameterValues();
 
-        if ($this->isFile($filePath)) {
-            return $filePath;
-        } elseif ($this->isWikipediaRawApiUrl($value)) {
-            return $value;
+        foreach ($values as $attribute => $value) {
+            switch ($attribute) {
+                case ConsoleAttributes::RANDOM:
+                    $fileSize = $this->convertValueToByte($value);
+                    $this->fileManager->createRandomFile($fileSize);
+                    return $this->fileManager->getRandomFilePath();
+                    break;
+                case ConsoleAttributes::SOURCE:
+                    $filePath = App::getRootDir() . $value;
+
+                    if ($this->isFile($filePath)) {
+                        return $filePath;
+                    } elseif ($this->isWikipediaRawApiUrl($value)) {
+                        return $value;
+                    }
+                    break;
+            }
         }
 
         throw new UndefinedInputValueException(sprintf('invalid console value %s', implode(',', $consoleRequest->getParameterValues())));
@@ -64,12 +92,23 @@ class ConsoleInputValueGuesser implements ConsoleInputGuesserInterface
     }
 
     /**
-     * @param ConsoleRequest $consoleRequest
-     *
-     * @return bool
+     * @param $fileSize
+     * @return array
      */
-    private function isStdin(ConsoleRequest $consoleRequest)
+    private function convertValueToByte($fileSize)
     {
-        return !$consoleRequest->hasArguments();
+        $fileSizeMapper = [
+            'KB' => 1e2,
+            'M'  => 1e6,
+            'GB' => 1e7,
+        ];
+
+        $fileSizeSuffix = preg_replace('/[^A-Z]/', '', $fileSize);
+
+        if (isset($fileSizeMapper[$fileSizeSuffix])) {
+            $fileSize = preg_replace('/[^0-9]/', '', $fileSize) * $fileSizeMapper[$fileSizeSuffix];
+        }
+
+        return $fileSize;
     }
 }

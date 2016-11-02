@@ -50,7 +50,7 @@ class InternalFileGeneratorContainerTest extends \PHPUnit_Framework_TestCase
     public function fileTypeProvider()
     {
         return [
-            [InternalFileGeneratorContainer::DICTIONARY, new Dictionary(['foo', 'bar'])],
+            [InternalFileGeneratorContainer::DICTIONARY, new Dictionary('foo,bar')],
             [InternalFileGeneratorContainer::CONFIG, new Config(['foo' => 'bar'])],
         ];
     }

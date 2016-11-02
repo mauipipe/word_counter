@@ -7,15 +7,13 @@
  */
 require __DIR__ . '/../vendor/autoload.php';
 
+use WordCounter\App\App;
 use WordCounter\Command\CommandInterface;
 use WordCounter\Console\ConsoleRequest;
-use WordCounter\Container\DependencyHandler;
-
-const SOURCE = 'source';
 
 $rustart = getrusage();
 
-$container = DependencyHandler::getContainer();
+$container = App::getContainer();
 /** @var CommandInterface $wordCountCommand */
 $wordCountCommand = $container->offsetGet('word_count.command');
-$wordCountCommand->execute(new ConsoleRequest($argv));
+$wordCountCommand->createRandomFile(new ConsoleRequest($argv));
