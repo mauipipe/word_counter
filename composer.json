@@ -3,7 +3,6 @@
   "description": "script to retrieve a the word count from different sources",
   "type": "library",
   "require": {
-    "guzzlehttp/guzzle": "^6.2",
     "pimple/pimple": "~3.0"
   },
   "require-dev": {
