@@ -35,18 +35,18 @@ class WordCountService
      */
     public function orderByNameAndWord($consoleValue)
     {
-        $progress = function ($counter) {
-            if ($counter % 8192 === 0) {
+        $progress = function($counter) {
+            if($counter % 8192 === 0) {
                 echo '.';
             }
         };
 
         $wordCounts = $this->streamWordTextCounter->getCounts($consoleValue, $progress);
 
-        $sortByCountAndName = function ($item1, $item2) {
-            if ($item1->getCount() < $item2->getCount()) {
+        $sortByCountAndName = function($item1, $item2) {
+            if($item1->getCount() < $item2->getCount()) {
                 return true;
-            } elseif ($item1->getCount() === $item2->getCount()) {
+            } elseif($item1->getCount() === $item2->getCount()) {
                 return $item1->getWord() > $item2->getWord();
             }
 

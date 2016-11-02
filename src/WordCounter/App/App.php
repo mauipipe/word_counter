@@ -68,22 +68,22 @@ class App
     private static function getContainer(ConfigRepository $config)
     {
         $dependencies = [
-            'console_value.guesser'      => function ($c) {
+            'console_value.guesser'      => function($c) {
                 return new ConsoleInputValueGuesser($c['file.manager']);
             },
-            'console.request.factory'    => function ($c) {
+            'console.request.factory'    => function($c) {
                 return new ConsoleRequest($c['console_value.guesser']);
             },
-            'spl_file_object.factory'    => function () {
+            'spl_file_object.factory'    => function() {
                 return new SplFileObjectFactory();
             },
-            'stream_text_word.counter'   => function ($c) {
+            'stream_text_word.counter'   => function($c) {
                 return new TextStreamOccurrencesCounter($c['spl_file_object.factory']);
             },
-            'word_count.service'         => function ($c) {
+            'word_count.service'         => function($c) {
                 return new WordCountService($c['stream_text_word.counter']);
             },
-            'word_count.command'         => function ($c) {
+            'word_count.command'         => function($c) {
                 return new WordCountCommand(
                     $c['word_count.service'],
                     $c['console_value.guesser'],
@@ -91,22 +91,22 @@ class App
                     $c['console_argument.validator']
                 );
             },
-            'file.manager'               => function ($c) {
+            'file.manager'               => function($c) {
                 return new FileRepository($c['configRepository.manager'], $c['dictionary.factory']);
             },
-            'configRepository.manager'   => function ($c) use ($config) {
+            'configRepository.manager'   => function($c) use ($config) {
                 return $config;
             },
-            'console.renderer'           => function ($c) {
+            'console.renderer'           => function($c) {
                 return new ConsoleRenderer($c['usage_recorder.console']);
             },
-            'usage_recorder.console'     => function ($c) {
+            'usage_recorder.console'     => function($c) {
                 return new UsageRecorder();
             },
-            'dictionary.factory'         => function ($c) {
+            'dictionary.factory'         => function($c) {
                 return new DictionaryFactory($c['configRepository.manager']);
             },
-            'console_argument.validator' => function ($c) {
+            'console_argument.validator' => function($c) {
                 return new ConsoleArgumentValidator($c['configRepository.manager']);
             },
         ];

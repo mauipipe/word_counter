@@ -35,7 +35,7 @@ class TextStreamOccurrencesCounter implements CounterInterface
         $counts = [];
 
         $counter = 0;
-        while (!$fileObject->eof()) {
+        while(!$fileObject->eof()) {
             $buffer = (string)$fileObject->current();
             $partialResult = $this->getSanitizedPartialResult($buffer);
             $this->sumCounts($partialResult, $counts);
@@ -53,11 +53,11 @@ class TextStreamOccurrencesCounter implements CounterInterface
      */
     private function sumCounts($a, &$result)
     {
-        foreach ($a as $value) {
+        foreach($a as $value) {
             $subValue = strtolower($value);
             $hash = crc32($subValue);
 
-            if (!isset($result[$hash])) {
+            if(!isset($result[$hash])) {
                 $result[$hash] = new WordOccurrences($subValue);
             } else {
                 $result[$hash]->incrementCount();
