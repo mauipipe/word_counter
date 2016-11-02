@@ -71,6 +71,6 @@ class WordCountCommandTest extends \PHPUnit_Framework_TestCase
             ->with(self::TEST_PARAMETER_VALUE)
             ->willReturn($expectedResult);
 
-        $this->wordCountCommand->createRandomFile($consoleRequest);
+        $this->wordCountCommand->execute($consoleRequest);
     }
 }

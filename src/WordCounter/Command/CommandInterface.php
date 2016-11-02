@@ -17,5 +17,5 @@ interface CommandInterface
      *
      * @return string
      */
-    public function createRandomFile(ConsoleRequest $consoleRequest);
+    public function execute(ConsoleRequest $consoleRequest);
 }

@@ -8,8 +8,8 @@
 
 namespace WordCounter\Command;
 
+use WordCounter\Console\ConsoleRendererInterface;
 use WordCounter\Console\ConsoleRequest;
-use WordCounter\Exception\NotAllowedConsoleParamException;
 use WordCounter\Guesser\ConsoleInputGuesserInterface;
 use WordCounter\Service\WordCountService;
 
@@ -35,21 +35,27 @@ class WordCountCommand implements CommandInterface
         self::SOURCE,
         self::RANDOM,
     ];
+    /**
+     * @var ConsoleRendererInterface
+     */
+    private $consoleRenderer;
 
     /**
      * @param WordCountService $wordCountService
      * @param ConsoleInputGuesserInterface $consoleInputValueGuesser
+     * @param ConsoleRendererInterface $consoleRenderer
      */
-    public function __construct(WordCountService $wordCountService, ConsoleInputGuesserInterface $consoleInputValueGuesser)
+    public function __construct(WordCountService $wordCountService, ConsoleInputGuesserInterface $consoleInputValueGuesser, ConsoleRendererInterface $consoleRenderer)
     {
         $this->wordCountService = $wordCountService;
         $this->consoleInputValueGuesser = $consoleInputValueGuesser;
+        $this->consoleRenderer = $consoleRenderer;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function createRandomFile(ConsoleRequest $consoleRequest)
+    public function execute(ConsoleRequest $consoleRequest)
     {
         $rustart = getrusage();
         $consoleValue = $this->consoleInputValueGuesser->guess($consoleRequest);
@@ -58,77 +64,7 @@ class WordCountCommand implements CommandInterface
 
         $result = $this->wordCountService->orderByNameAndWord($consoleValue);
 
-        foreach ($result as $wordCount) {
-            echo sprintf("%s=%d\n", $wordCount->getWord(), $wordCount->getCount());
-        }
-
-        $this->printUsage($rustart);
-    }
-
-    /**
-     * @param array $argv
-     *
-     * @return string|null
-     *
-     * @throws NotAllowedConsoleParamException
-     */
-    private function getArguments(array $argv)
-    {
-        $mandatoryParameters = [self::SOURCE];
-
-        foreach ($mandatoryParameters as $mandatoryParameter) {
-            foreach ($argv as $value) {
-                if (false !== strpos($value, $mandatoryParameter)) {
-                    return $mandatoryParameter;
-                }
-            }
-        }
-
-        throw new NotAllowedConsoleParamException(
-            sprintf('missing mandatory parameter from %s', implode(',', $mandatoryParameters)
-            )
-        );
-    }
-
-    /**
-     * @param array $rustart
-     */
-    private function printUsage(array $rustart)
-    {
-        function rutime($ru, $rus, $index)
-        {
-            return ($ru["ru_$index.tv_sec"] * 1000 + intval($ru["ru_$index.tv_usec"] / 1000))
-            - ($rus["ru_$index.tv_sec"] * 1000 + intval($rus["ru_$index.tv_usec"] / 1000));
-        }
-
-        $ru = getrusage();
-        $seconds = rutime($ru, $rustart, 'utime') / 1000;
-        echo "\nThis process used " . $seconds .
-            "sec for its computations\n";
-        echo 'It spent ' . rutime($ru, $rustart, 'stime') .
-            " ms in system calls\n";
-
-        echo sprintf("real Usage %s\n", memory_get_peak_usage(true));
-        echo sprintf("peak usage %s\n", memory_get_peak_usage());
-    }
-
-    /**
-     * @param ConsoleRequest $consoleRequest
-     *
-     * @return string|null
-     */
-    private function getAttribute(ConsoleRequest $consoleRequest)
-    {
-        if (!$consoleRequest->hasArguments()) {
-            return self::STDIN;
-        }
-
-        foreach (self::$allowedArguments as $allowedArgument) {
-            if ($consoleRequest->hasArgument($allowedArgument)) {
-                return $allowedArgument;
-            }
-        }
-
-        throw new \OutOfBoundsException('cannot find valid attribute');
+        $this->consoleRenderer->printResponseData($result);
+        $this->consoleRenderer->printUsage($rustart);
     }
 }

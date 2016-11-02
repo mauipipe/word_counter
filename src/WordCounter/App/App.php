@@ -10,6 +10,7 @@ namespace WordCounter\App;
 
 use Pimple\Container;
 use WordCounter\Command\WordCountCommand;
+use WordCounter\Console\ConsoleRenderer;
 use WordCounter\Console\ConsoleRequest;
 use WordCounter\Counter\StreamTextWordCounter;
 use WordCounter\Factory\DictionaryFactory;
@@ -81,13 +82,16 @@ class App
                 return new WordCountService($c['stream_text_word.counter']);
             },
             'word_count.command'       => function ($c) {
-                return new WordCountCommand($c['word_count.service'], $c['console_value.guesser']);
+                return new WordCountCommand($c['word_count.service'], $c['console_value.guesser'], $c['console.renderer']);
             },
             'file.manager'             => function ($c) {
                 return new FileManager($c['configManager.manager'], $c['dictionary.factory']);
             },
             'configManager.manager'    => function ($c) use ($config) {
                 return $config;
+            },
+            'console.renderer'         => function ($c) {
+                return new ConsoleRenderer();
             },
             'dictionary.factory'       => function ($c) {
                 return new DictionaryFactory($c['configManager.manager']);

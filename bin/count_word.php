@@ -21,4 +21,4 @@ if ($consoleRequest->isTestEnv()) {
 $container = App::init(App::getRootDir() . $configFile);
 /** @var CommandInterface $wordCountCommand */
 $wordCountCommand = $container->offsetGet('word_count.command');
-$wordCountCommand->createRandomFile(new ConsoleRequest($argv));
+$wordCountCommand->execute(new ConsoleRequest($argv));

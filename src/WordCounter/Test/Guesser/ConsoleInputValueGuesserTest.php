@@ -92,7 +92,7 @@ class ConsoleInputValueGuesserTest extends \PHPUnit_Framework_TestCase
         $expectedResult = 'random.txt';
 
         $this->fileManager->expects($this->once())
-            ->method('createRandomFile')
+            ->method('execute')
             ->with(12e6);
 
         $this->fileManager->expects($this->once())
