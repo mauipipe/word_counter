@@ -1,3 +1,4 @@
 {
-  "random_file_path": "/resources/test/random_size_text.txt"
+  "random_file_path": "/resources/test/random_size_text.txt",
+  "dictionary_path": "/resources/dictionary.txt"
 }

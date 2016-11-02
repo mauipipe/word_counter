@@ -3,55 +3,54 @@
  * Created by IntelliJ IDEA.
  * User: mauilap
  * Date: 02/11/16
- * Time: 11.57
+ * Time: 11.57.
  */
 
 namespace WordCounter\Test\Manager\Functional;
 
-
 use WordCounter\App\App;
-use WordCounter\Container\InternalFileGeneratorContainer;
+use WordCounter\Factory\DictionaryFactory;
+use WordCounter\Manager\ConfigManager;
 use WordCounter\Manager\FileManager;
-use WordCounter\Model\Config;
 use WordCounter\Model\Dictionary;
 use WordCounter\Test\Enum\ConfigTest;
 
 class FileManagerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var InternalFileGeneratorContainer|\PHPUnit_Framework_MockObject_MockObject
+     * @var ConfigManager|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $internalFileGeneratorContainer;
+    private $configManager;
     /**
-     * @var
+     * @var DictionaryFactory|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $dictionaryFactory;
+    /**
+     * @var string
      */
     private $randomTestFilePath;
     /**
-     * @var FileManager;
+     * @var FileManager
      */
-    private $generateFileWithRandomContentCommand;
+    private $fileManager;
 
     public function setUp()
     {
-        $this->internalFileGeneratorContainer = $this->getMockBuilder(
-            'WordCounter\Container\InternalFileGeneratorContainer'
-        )
+        $this->configManager = $this->getMockBuilder('WordCounter\Manager\ConfigManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->dictionaryFactory = $this->getMockBuilder('WordCounter\Factory\DictionaryFactory')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->internalFileGeneratorContainer->expects($this->at(0))
-            ->method('getFileType')
-            ->with('config')
-            ->willReturn(new Config([FileManager::RANDOM_FILE_PATH => ConfigTest::RANDOM_FILE_PATH]));
-
-        $this->internalFileGeneratorContainer->expects($this->at(1))
-            ->method('getFileType')
-            ->with('dictionary')
-            ->willReturn(new Dictionary('foo,bar'));
-
         $this->randomTestFilePath = App::getRootDir() . ConfigTest::RANDOM_FILE_PATH;
 
-        $this->generateFileWithRandomContentCommand = new FileManager($this->internalFileGeneratorContainer);
+        $dictionary = new Dictionary('foo,bar');
+        $this->dictionaryFactory->expects($this->once())
+            ->method('create')
+            ->willReturn($dictionary);
+
+        $this->fileManager = new FileManager($this->configManager, $this->dictionaryFactory);
     }
 
     /**
@@ -60,7 +59,13 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
     public function createsInternalRandomFile()
     {
         $fileSize = 1e2;
-        $this->generateFileWithRandomContentCommand->createRandomFile($fileSize);
+
+        $this->configManager->expects($this->once())
+            ->method('getValue')
+            ->with(FileManager::RANDOM_FILE_PATH)
+            ->willReturn(ConfigTest::RANDOM_FILE_PATH);
+
+        $this->fileManager->createRandomFile($fileSize);
 
         $this->assertFileExists($this->randomTestFilePath);
         $this->assertTrue(filesize($this->randomTestFilePath) > 1e2);

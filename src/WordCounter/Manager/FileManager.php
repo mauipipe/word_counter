@@ -3,20 +3,18 @@
  * Created by IntelliJ IDEA.
  * User: mauilap
  * Date: 02/11/16
- * Time: 10.58
+ * Time: 10.58.
  */
 
 namespace WordCounter\Manager;
 
-
 use WordCounter\App\App;
-use WordCounter\Container\InternalFileGeneratorContainer;
+use WordCounter\Factory\DictionaryFactory;
 use WordCounter\Model\Config;
 use WordCounter\Model\Dictionary;
 
 class FileManager
 {
-
     const RANDOM_FILE_PATH = 'random_file_path';
 
     /**
@@ -29,12 +27,13 @@ class FileManager
     private $dictionary;
 
     /**
-     * @param InternalFileGeneratorContainer $fileGeneratorContainer
+     * @param ConfigManager $configManager
+     * @param DictionaryFactory $dictionaryFactory
      */
-    public function __construct(InternalFileGeneratorContainer $fileGeneratorContainer)
+    public function __construct(ConfigManager $configManager, DictionaryFactory $dictionaryFactory)
     {
-        $this->config = $fileGeneratorContainer->getFileType(InternalFileGeneratorContainer::CONFIG);
-        $this->dictionary = $fileGeneratorContainer->getFileType(InternalFileGeneratorContainer::DICTIONARY);
+        $this->config = $configManager;
+        $this->dictionary = $dictionaryFactory->create();
     }
 
     /**
@@ -57,10 +56,9 @@ class FileManager
         while ($bytesAdded < $fileSize) {
             $randDomIndex = rand(0, $dictionarySize);
             $randomWord = $this->dictionary->getValue($randDomIndex);
-            $randomFile->fwrite($randomWord . " ");
+            $randomFile->fwrite($randomWord . ' ');
 
             $bytesAdded += strlen($randomWord);
-
 
             $randomFile->next();
         }
@@ -73,5 +71,4 @@ class FileManager
     {
         return App::getRootDir() . $this->config->getValue(self::RANDOM_FILE_PATH);
     }
-
 }

@@ -26,9 +26,9 @@ class CommandContext implements Context
      */
     public function thereIsAInMySystem($sourceText)
     {
-        $sourcePath = __DIR__ . '' . self::FIXTURES_FOLDER . '' . $sourceText;
+        $sourcePath = \WordCounter\App\App::getRootDir() . 'features/fixtures/' . $sourceText;
         if (!file_exists($sourcePath)) {
-            throw new FileNotFoundException(sprintf('cannot find file %s', $sourcePath));
+            throw new FileNotFoundException(sprintf('scenario: cannot find file %s', $sourcePath));
         }
     }
 
@@ -62,6 +62,7 @@ class CommandContext implements Context
                 return (int)$key - 1;
             }
         }
+
         return count($result);
     }
 
@@ -83,22 +84,40 @@ class CommandContext implements Context
     }
 
     /**
+     * @When print console response
+     */
+    public function printConsoleResponse2()
+    {
+        var_export(implode("\n", $this->getResult()));
+    }
+
+    /**
+     * @Given my system have no random generated file :fileName
+     */
+    public function mySystemHaveNoRandomGeneratedFile($fileName)
+    {
+        $sourcePath = __DIR__ . '' . self::FIXTURES_FOLDER . '' . $fileName;
+
+        PHPUnit_Framework_Assert::assertTrue(!is_file($sourcePath));
+    }
+
+    /**
+     * @Then a valid result is return
+     */
+    public function aValidResultIsReturn()
+    {
+        PHPUnit_Framework_Assert::assertTrue(count($this->getResult()) > 0);
+    }
+
+    /**
      * @return array
      */
     private function getResult()
     {
         $commandResponse = trim(str_replace("\n", ' ', $this->commandResponse));
-        $result = explode(" ", $commandResponse);
+        $result = explode(' ', $commandResponse);
         $slicedResult = array_slice($result, 2, $this->getResultMaxLimit($result) - 1);
-        return $slicedResult;
-    }
 
-    /**
-     * @When print console response
-     */
-    public function printConsoleResponse2()
-    {
-        echo implode("\n", $this->getResult());
-        die;
+        return $slicedResult;
     }
 }

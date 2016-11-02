@@ -47,6 +47,7 @@ class ConsoleInputValueGuesser implements ConsoleInputGuesserInterface
                 case ConsoleAttributes::RANDOM:
                     $fileSize = $this->convertValueToByte($value);
                     $this->fileManager->createRandomFile($fileSize);
+
                     return $this->fileManager->getRandomFilePath();
                     break;
                 case ConsoleAttributes::SOURCE:
@@ -93,6 +94,7 @@ class ConsoleInputValueGuesser implements ConsoleInputGuesserInterface
 
     /**
      * @param $fileSize
+     *
      * @return array
      */
     private function convertValueToByte($fileSize)

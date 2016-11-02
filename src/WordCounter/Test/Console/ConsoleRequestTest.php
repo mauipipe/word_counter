@@ -57,6 +57,17 @@ class ConsoleRequestTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     */
+    public function checksIfConsoleRequestHasTestEnvArgument()
+    {
+        $consoleRequest = new ConsoleRequest([' ', '--source=test', '--test']);
+        $result = $consoleRequest->isTestEnv();
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @test
      *
      * @expectedException \WordCounter\Exception\UndefinedAttributeException
      */
@@ -64,22 +75,6 @@ class ConsoleRequestTest extends \PHPUnit_Framework_TestCase
     {
         $mockArgv = [
             1 => self::TEST_ATTRIBUTE . ConsoleRequest::ATTRIBUTE_SEPARATOR . self::ATTRIBUTE_WIKIPEDIA_RAW_API,
-        ];
-        $invalidConsumedAttribute = 'invalid';
-
-        $consoleRequest = new ConsoleRequest($mockArgv);
-        $consoleRequest->getParameterValue($invalidConsumedAttribute);
-    }
-
-    /**
-     * @test
-     *
-     * @expectedException \WordCounter\Exception\InvalidAttributeException
-     */
-    public function getsConsoleValueFromParameterExceptionWhenAndAttributeWithNoValueNameIsConsumed()
-    {
-        $mockArgv = [
-            '', 1 => self::TEST_ATTRIBUTE,
         ];
         $invalidConsumedAttribute = 'invalid';
 

@@ -10,7 +10,6 @@ namespace WordCounter\Console;
 
 use WordCounter\Exception\InvalidAttributeException;
 use WordCounter\Exception\UndefinedAttributeException;
-use WordCounter\Guesser\ConsoleInputGuesserInterface;
 
 class ConsoleRequest
 {
@@ -18,16 +17,16 @@ class ConsoleRequest
     const ATTRIBUTE_SEPARATOR = '=';
 
     /**
-     * @var ConsoleInputGuesserInterface
+     * @var array
      */
-    private $argumentsValues;
+    private $consoleInputs;
 
     /**
      * @param array $argumentsValues
      */
     public function __construct(array $argumentsValues)
     {
-        $this->argumentsValues = $this->getConsoleInputs($argumentsValues);
+        $this->consoleInputs = $this->getConsoleInputs($argumentsValues);
     }
 
     /**
@@ -39,11 +38,11 @@ class ConsoleRequest
      */
     public function getParameterValue($key)
     {
-        if (!isset($this->argumentsValues[$key])) {
+        if (!isset($this->consoleInputs[$key])) {
             throw new UndefinedAttributeException(sprintf('%s', $key));
         }
 
-        return $this->argumentsValues[$key];
+        return $this->consoleInputs[$key];
     }
 
     /**
@@ -51,7 +50,7 @@ class ConsoleRequest
      */
     public function getParameterValues()
     {
-        return $this->argumentsValues;
+        return $this->consoleInputs;
     }
 
     /**
@@ -59,7 +58,7 @@ class ConsoleRequest
      */
     public function hasArguments()
     {
-        return count($this->argumentsValues) > 0;
+        return count($this->consoleInputs) > 0;
     }
 
     /**
@@ -67,8 +66,7 @@ class ConsoleRequest
      */
     public function isStdin()
     {
-        return !count($this->argumentsValues) > 0;
-
+        return !count($this->consoleInputs) > 0;
     }
 
     /**
@@ -87,14 +85,22 @@ class ConsoleRequest
         }
 
         foreach (array_splice($argumentValues, 1) as $argumentValue) {
-            if (false === strpos($argumentValue, self::ATTRIBUTE_SEPARATOR)) {
-                throw new InvalidAttributeException($argumentValue);
+            if (strpos($argumentValue, self::ATTRIBUTE_SEPARATOR)) {
+                list($argument, $value) = explode(self::ATTRIBUTE_SEPARATOR, $argumentValue, 2);
+                $consoleInputs[$argument] = $value;
+            } else {
+                $consoleInputs['optional'] = $argumentValue;
             }
-
-            list($argument, $value) = explode(self::ATTRIBUTE_SEPARATOR, $argumentValue, 2);
-            $consoleInputs[$argument] = $value;
         }
 
         return $consoleInputs;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTestEnv()
+    {
+        return in_array('--test', $this->consoleInputs);
     }
 }

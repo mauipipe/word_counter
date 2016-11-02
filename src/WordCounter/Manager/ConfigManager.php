@@ -3,13 +3,11 @@
  * Created by IntelliJ IDEA.
  * User: mauilap
  * Date: 01/11/16
- * Time: 20.43
+ * Time: 20.43.
  */
 
 namespace WordCounter\Manager;
 
-
-use WordCounter\App\App;
 use WordCounter\Exception\UndefinedConfigValueException;
 
 class ConfigManager
@@ -19,9 +17,12 @@ class ConfigManager
      */
     private $configData;
 
+    /**
+     * @param string $configFilePath
+     */
     public function __construct($configFilePath)
     {
-        $fileContent = file_get_contents(App::getSrcDir() . $configFilePath);
+        $fileContent = file_get_contents($configFilePath);
         $this->configData = json_decode($fileContent, true);
     }
 
@@ -37,6 +38,7 @@ class ConfigManager
         if (!isset($this->configData[$key])) {
             throw new UndefinedConfigValueException($key);
         }
+
         return $this->configData[$key];
     }
 }

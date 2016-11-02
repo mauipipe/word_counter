@@ -103,5 +103,4 @@ class ConsoleInputValueGuesserTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedResult, $result);
     }
-
 }

@@ -3,18 +3,17 @@
  * Created by IntelliJ IDEA.
  * User: mauilap
  * Date: 01/11/16
- * Time: 20.44
+ * Time: 20.44.
  */
 
 namespace WordCounter\Test\Manager;
-
 
 use WordCounter\Manager\ConfigManager;
 
 class ConfigManagerTest extends \PHPUnit_Framework_TestCase
 {
-    const CONFIG_KEY = "foo";
-    const VALUE = "bar";
+    const CONFIG_KEY = 'foo';
+    const VALUE = 'bar';
 
     /**
      * @var ConfigManager
@@ -23,7 +22,7 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->configManager = new ConfigManager('Test/fixtures/config.json');
+        $this->configManager = new ConfigManager(__DIR__ . '/../fixtures/config.json');
     }
 
     /**

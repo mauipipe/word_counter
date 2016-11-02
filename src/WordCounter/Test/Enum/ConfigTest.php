@@ -1,10 +1,12 @@
 <?php
+
 namespace WordCounter\Test\Enum;
+
 /**
  * Created by IntelliJ IDEA.
  * User: mauilap
  * Date: 02/11/16
- * Time: 11.33
+ * Time: 11.33.
  */
 class ConfigTest
 {

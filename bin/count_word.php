@@ -13,7 +13,12 @@ use WordCounter\Console\ConsoleRequest;
 
 $rustart = getrusage();
 
-$container = App::getContainer();
+$consoleRequest = new ConsoleRequest($argv);
+$configFile = 'config/config.json';
+if ($consoleRequest->isTestEnv()) {
+    $configFile = 'config/config_test.json';
+}
+$container = App::init(App::getRootDir() . $configFile);
 /** @var CommandInterface $wordCountCommand */
 $wordCountCommand = $container->offsetGet('word_count.command');
 $wordCountCommand->createRandomFile(new ConsoleRequest($argv));

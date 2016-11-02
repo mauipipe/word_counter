@@ -65,7 +65,6 @@ class WordCountCommand implements CommandInterface
         $this->printUsage($rustart);
     }
 
-
     /**
      * @param array $argv
      *
@@ -115,6 +114,7 @@ class WordCountCommand implements CommandInterface
 
     /**
      * @param ConsoleRequest $consoleRequest
+     *
      * @return string|null
      */
     private function getAttribute(ConsoleRequest $consoleRequest)

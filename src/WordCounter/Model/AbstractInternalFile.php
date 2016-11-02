@@ -3,11 +3,10 @@
  * Created by IntelliJ IDEA.
  * User: mauilap
  * Date: 02/11/16
- * Time: 1.01
+ * Time: 1.01.
  */
 
 namespace WordCounter\Model;
-
 
 use WordCounter\Exception\UndefinedConfigValueException;
 
@@ -36,6 +35,7 @@ abstract class AbstractInternalFile implements InternalResourceSerializerInterfa
 
     /**
      * @param $key
+     *
      * @return string
      *
      * @throws UndefinedConfigValueException

@@ -3,11 +3,10 @@
  * Created by IntelliJ IDEA.
  * User: mauilap
  * Date: 02/11/16
- * Time: 11.10
+ * Time: 11.10.
  */
 
 namespace WordCounter\Enum;
-
 
 final class ConsoleAttributes
 {
