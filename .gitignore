@@ -1,5 +1,4 @@
 /vendor/
 /vagrant/.vagrant/
 /.idea/
-/resources/test/*
 /features/fixtures/random_size_text.txt
