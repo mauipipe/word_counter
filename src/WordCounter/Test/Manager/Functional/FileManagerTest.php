@@ -44,6 +44,7 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         $this->randomTestFilePath = App::getRootDir() . ConfigTest::RANDOM_FILE_PATH;
+        file_put_contents($this->randomTestFilePath, '');
 
         $dictionary = new Dictionary('foo,bar');
         $this->dictionaryFactory->expects($this->once())
