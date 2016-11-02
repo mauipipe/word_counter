@@ -11,7 +11,7 @@ namespace WordCounter\Counter;
 use WordCounter\Factory\SplFileObjectFactoryInterface;
 use WordCounter\Model\WordOccurrences;
 
-class StreamTextWordCounter implements CounterInterface
+class TextStreamOccurrencesCounter implements CounterInterface
 {
     /**
      * @var SplFileObjectFactoryInterface

@@ -13,7 +13,7 @@ use WordCounter\Command\WordCountCommand;
 use WordCounter\Console\ConsoleRenderer;
 use WordCounter\Console\ConsoleRequest;
 use WordCounter\Console\UsageRecorder;
-use WordCounter\Counter\StreamTextWordCounter;
+use WordCounter\Counter\TextStreamOccurrencesCounter;
 use WordCounter\Factory\DictionaryFactory;
 use WordCounter\Factory\SplFileObjectFactory;
 use WordCounter\Guesser\ConsoleInputValueGuesser;
@@ -78,7 +78,7 @@ class App
                 return new SplFileObjectFactory();
             },
             'stream_text_word.counter'   => function ($c) {
-                return new StreamTextWordCounter($c['spl_file_object.factory']);
+                return new TextStreamOccurrencesCounter($c['spl_file_object.factory']);
             },
             'word_count.service'         => function ($c) {
                 return new WordCountService($c['stream_text_word.counter']);

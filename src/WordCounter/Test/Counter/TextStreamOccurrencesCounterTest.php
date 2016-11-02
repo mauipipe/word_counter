@@ -3,7 +3,7 @@
 namespace WordCounter\Test\Chain\Handler;
 
 use WordCounter\Counter\CounterInterface;
-use WordCounter\Counter\StreamTextWordCounter;
+use WordCounter\Counter\TextStreamOccurrencesCounter;
 use WordCounter\Factory\SplFileObjectFactoryInterface;
 use WordCounter\Test\Helper\FixtureProvider;
 
@@ -13,7 +13,7 @@ use WordCounter\Test\Helper\FixtureProvider;
  * Date: 29/10/16
  * Time: 18.27.
  */
-class StreamTextWordCounterTest extends \PHPUnit_Framework_TestCase
+class TextStreamOccurrencesCounterTest extends \PHPUnit_Framework_TestCase
 {
     use FixtureProvider;
 
@@ -33,7 +33,7 @@ class StreamTextWordCounterTest extends \PHPUnit_Framework_TestCase
         $this->splFileObjectFactory = $this->getMockBuilder('WordCounter\Factory\SplFileObjectFactoryInterface')
             ->getMock();
 
-        $this->streamTextWordCounter = new StreamTextWordCounter($this->splFileObjectFactory);
+        $this->streamTextWordCounter = new TextStreamOccurrencesCounter($this->splFileObjectFactory);
     }
 
     /**
