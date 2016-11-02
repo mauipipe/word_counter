@@ -36,7 +36,7 @@ class TextStreamOccurrencesCounter implements CounterInterface
 
         $counter = 0;
         while (!$fileObject->eof()) {
-            $buffer = $fileObject->current();
+            $buffer = (string)$fileObject->current();
             $partialResult = $this->getSanitizedPartialResult($buffer);
             $this->sumCounts($partialResult, $counts);
             unset($partialResult);
