@@ -3,6 +3,7 @@ php:
   - '5.6'
   - '7.0'
 before-script:
+   - touch resources/test/random_text.txt
    - php composer.phar self-update
 script:
    - php composer.phar install
