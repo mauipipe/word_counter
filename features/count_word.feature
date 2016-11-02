@@ -6,7 +6,7 @@ Feature:
   @word_counter @internal_file @small
   Scenario: retrieve word occurrences from an internal file source ordered by occurrences and name
     Given there is a "small_text.txt" in my system
-    When the "php" command "/../../bin/count_word.php --source=features/fixtures/small_text.txt"
+    When the "php" command "/../../bin/count_word --source=features/fixtures/small_text.txt"
     Then the result would be equal to:
     """
     mozart=7
@@ -96,7 +96,7 @@ Feature:
 
   @word_counter @wikipedia_page @small
   Scenario: retrieve word occurrences from Wikipedia raw API ordered by occurrences and name
-    When the "php" command "/../../bin/count_word.php --source='https://en.wikipedia.org/w/index.php?title=Adalbert&action=raw'"
+    When the "php" command "/../../bin/count_word --source='https://en.wikipedia.org/w/index.php?title=Adalbert&action=raw'"
     Then the result would be equal to:
     """
     adalbert=38
@@ -290,7 +290,7 @@ Feature:
 
   @word_counter @stdin @nightly
   Scenario: retrieve word occurrences ordered by occurrences and name from stdin ordered by frequency and name
-    When value "/fixtures/small_text.txt" is piped "php" command "/../../bin/count_word.php"
+    When value "/fixtures/small_text.txt" is piped "php" command "/../../bin/count_word"
     Then the result would be equal to:
     """
     mozart=7
@@ -381,13 +381,13 @@ Feature:
   @word_counter @internal_random
   Scenario: retrieve word occurrences from a random size internal file ordered by occurrences and name
     Given my system have no random generated file "random_test.txt"
-    When the "php" command "/../../bin/count_word.php --random=1M --test"
+    When the "php" command "/../../bin/count_word --random=1M --test"
     Then there is a "random_size_text.txt" in my system
     And a valid result is return
 
   @word_counter @validation
   Scenario: return an error message when mandatory params are not sent
-    When the "php" command "/../../bin/count_word.php --wrong-param"
+    When the "php" command "/../../bin/count_word --wrong-param"
     And error message should appear:
     """
     missing mandatory parameter: --source,--random
