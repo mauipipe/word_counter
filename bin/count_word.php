@@ -14,6 +14,8 @@ use WordCounter\Console\ConsoleRequest;
 $rustart = getrusage();
 
 $consoleRequest = new ConsoleRequest($argv);
+$handle = fopen(ConsoleRequest::STDIN, 'r');
+
 $configFile = 'config/config.json';
 if ($consoleRequest->isTestEnv()) {
     $configFile = 'config/config_test.json';

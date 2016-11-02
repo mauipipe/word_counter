@@ -41,7 +41,7 @@ class CommandContext implements Context
     {
         $expectedResult = explode("\n", trim($expectedResponse->getRaw()));
 
-        $result = $this->getResult();
+        $result = $this->getResultForCounter();
 
         PHPUnit_Framework_Assert::assertSame(
             $result,
@@ -88,7 +88,7 @@ class CommandContext implements Context
      */
     public function printConsoleResponse2()
     {
-        var_export(implode("\n", $this->getResult()));
+        var_export(implode("\n", $this->getResultForCounter()));
     }
 
     /**
@@ -106,7 +106,7 @@ class CommandContext implements Context
      */
     public function aValidResultIsReturn()
     {
-        PHPUnit_Framework_Assert::assertTrue(count($this->getResult()) > 0);
+        PHPUnit_Framework_Assert::assertTrue(count($this->getResultForCounter()) > 0);
     }
 
     /**
@@ -115,9 +115,28 @@ class CommandContext implements Context
     private function getResult()
     {
         $commandResponse = trim(str_replace("\n", ' ', $this->commandResponse));
+        return explode(' ', $commandResponse);
+    }
+
+    /**
+     * @return array
+     */
+    private function getResultForCounter()
+    {
+        $commandResponse = trim(str_replace("\n", ' ', $this->commandResponse));
         $result = explode(' ', $commandResponse);
         $slicedResult = array_slice($result, 2, $this->getResultMaxLimit($result) - 1);
 
         return $slicedResult;
+    }
+
+    /**
+     * @When error message should appear:
+     *
+     * @param PyStringNode $string
+     */
+    public function errorMessageShouldAppear(PyStringNode $string)
+    {
+        PHPUnit_Framework_Assert::assertSame(explode(" ", $string), $this->getResult());
     }
 }

@@ -10,8 +10,10 @@ namespace WordCounter\Command;
 
 use WordCounter\Console\ConsoleRendererInterface;
 use WordCounter\Console\ConsoleRequest;
+use WordCounter\Exception\MissingMandatoryAttributeException;
 use WordCounter\Guesser\ConsoleInputGuesserInterface;
 use WordCounter\Service\WordCountService;
+use WordCounter\Validator\ConsoleValidatorInterface;
 
 class WordCountCommand implements CommandInterface
 {
@@ -39,21 +41,28 @@ class WordCountCommand implements CommandInterface
      * @var ConsoleRendererInterface
      */
     private $consoleRenderer;
+    /**
+     * @var ConsoleValidatorInterface
+     */
+    private $consoleValidator;
 
     /**
      * @param WordCountService $wordCountService
      * @param ConsoleInputGuesserInterface $consoleInputValueGuesser
      * @param ConsoleRendererInterface $consoleRenderer
+     * @param ConsoleValidatorInterface $consoleValidator
      */
     public function __construct(
         WordCountService $wordCountService,
         ConsoleInputGuesserInterface $consoleInputValueGuesser,
-        ConsoleRendererInterface $consoleRenderer
+        ConsoleRendererInterface $consoleRenderer,
+        ConsoleValidatorInterface $consoleValidator
     )
     {
         $this->wordCountService = $wordCountService;
         $this->consoleInputValueGuesser = $consoleInputValueGuesser;
         $this->consoleRenderer = $consoleRenderer;
+        $this->consoleValidator = $consoleValidator;
     }
 
     /**
@@ -61,14 +70,22 @@ class WordCountCommand implements CommandInterface
      */
     public function execute(ConsoleRequest $consoleRequest)
     {
-        $this->consoleRenderer->initUsageRecorder();
-        $consoleValue = $this->consoleInputValueGuesser->guess($consoleRequest);
+        try {
+            $this->consoleValidator->validate($consoleRequest);
 
-        echo $this->consoleRenderer->printSingleLine(sprintf("Running %s\n", $consoleValue));
+            $this->consoleRenderer->initUsageRecorder();
+            $consoleValue = $this->consoleInputValueGuesser->guess($consoleRequest);
 
-        $result = $this->wordCountService->orderByNameAndWord($consoleValue);
+            echo $this->consoleRenderer->printSingleLine(sprintf("Running %s\n", $consoleValue));
 
-        echo $this->consoleRenderer->printResponseData($result);
-        echo $this->consoleRenderer->printUsage();
+            $result = $this->wordCountService->orderByNameAndWord($consoleValue);
+
+            echo $this->consoleRenderer->printResponseData($result);
+            echo $this->consoleRenderer->printUsage();
+        } catch (MissingMandatoryAttributeException $e) {
+            echo sprintf('missing mandatory parameter: %s', $e->getMessage());
+        } catch (\Exception $e) {
+            echo sprintf("an error occurred:\n%ss\n%s", $e->getMessage(), $e->getTraceAsString());
+        }
     }
 }

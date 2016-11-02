@@ -1,4 +1,8 @@
 {
   "random_file_path": "/resources/test/random_size_text.txt",
-  "dictionary_path": "/resources/dictionary.txt"
+  "dictionary_path": "/resources/dictionary.txt",
+  "mandatory_console_args": [
+    "--source",
+    "--random"
+  ]
 }

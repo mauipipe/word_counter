@@ -384,3 +384,11 @@ Feature:
     When the "php" command "/../../bin/count_word.php --random=1M --test"
     Then there is a "random_size_text.txt" in my system
     And a valid result is return
+
+  @word_counter @validation
+  Scenario: return an error message when mandatory params are not sent
+    When the "php" command "/../../bin/count_word.php --wrong-param"
+    And error message should appear:
+    """
+    missing mandatory parameter: --source,--random
+    """

@@ -15,6 +15,7 @@ use WordCounter\Console\ConsoleRequest;
 use WordCounter\Guesser\ConsoleInputGuesserInterface;
 use WordCounter\Service\WordCountService;
 use WordCounter\Test\Helper\FixtureProvider;
+use WordCounter\Validator\ConsoleValidatorInterface;
 
 class WordCountCommandTest extends \PHPUnit_Framework_TestCase
 {
@@ -34,6 +35,10 @@ class WordCountCommandTest extends \PHPUnit_Framework_TestCase
      */
     private $consoleRenderer;
     /**
+     * @var ConsoleValidatorInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $consoleAttributeValidator;
+    /**
      * @var CommandInterface
      */
     private $wordCountCommand;
@@ -49,11 +54,15 @@ class WordCountCommandTest extends \PHPUnit_Framework_TestCase
         $this->consoleRenderer = $this->getMockBuilder('WordCounter\Console\ConsoleRenderer')
             ->disableOriginalConstructor()
             ->getMock();
+        $this->consoleAttributeValidator = $this->getMockBuilder('WordCounter\Validator\ConsoleValidatorInterface')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->wordCountCommand = new WordCountCommand(
             $this->wordCountService,
             $this->consoleInputGuesser,
-            $this->consoleRenderer
+            $this->consoleRenderer,
+            $this->consoleAttributeValidator
         );
     }
 
@@ -72,6 +81,9 @@ class WordCountCommandTest extends \PHPUnit_Framework_TestCase
         ];
 
         $consoleRequest = new ConsoleRequest($stubArgv);
+
+        $this->consoleAttributeValidator->expects($this->once())
+            ->method('validate');
 
         $this->consoleInputGuesser->expects($this->once())
             ->method('guess')
