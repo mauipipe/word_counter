@@ -1,5 +1,6 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mauipipe/word_counter/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/mauipipe/word_counter/?branch=master)
 
+[![Build Status](https://travis-ci.org/mauipipe/word_counter.svg?branch=master)](https://travis-ci.org/mauipipe/word_counter)
 
 # Word Counter
 simple script to retrieve word occurrences ordered by occurrence and name.
