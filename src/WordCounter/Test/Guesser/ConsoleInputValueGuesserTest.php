@@ -8,6 +8,7 @@
 
 namespace WordCounter\Test\Guesser;
 
+use WordCounter\App\App;
 use WordCounter\Console\ConsoleRequest;
 use WordCounter\Enum\ConsoleAttributes;
 use WordCounter\Guesser\ConsoleInputGuesserInterface;
@@ -63,7 +64,7 @@ class ConsoleInputValueGuesserTest extends \PHPUnit_Framework_TestCase
             //file input
             [
                 ['', ConsoleAttributes::SOURCE . ConsoleRequest::ATTRIBUTE_SEPARATOR . 'src/WordCounter/' . ConfigTest::ATTRIBUTE_FILE],
-                '/srv/apps/word_counter/src/WordCounter/App/../../../src/WordCounter/Test/fixtures/test.txt',
+                App::getRootDir() . 'src/WordCounter/Test/fixtures/test.txt',
             ],
             //Wikipedia Raw Api
             [
