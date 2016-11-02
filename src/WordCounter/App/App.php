@@ -12,6 +12,7 @@ use Pimple\Container;
 use WordCounter\Command\WordCountCommand;
 use WordCounter\Console\ConsoleRenderer;
 use WordCounter\Console\ConsoleRequest;
+use WordCounter\Console\UsageRecorder;
 use WordCounter\Counter\StreamTextWordCounter;
 use WordCounter\Factory\DictionaryFactory;
 use WordCounter\Factory\SplFileObjectFactory;
@@ -91,7 +92,10 @@ class App
                 return $config;
             },
             'console.renderer'         => function ($c) {
-                return new ConsoleRenderer();
+                return new ConsoleRenderer($c['usage_recorder.console']);
+            },
+            'usage_recorder.console'   => function ($c) {
+                return new UsageRecorder();
             },
             'dictionary.factory'       => function ($c) {
                 return new DictionaryFactory($c['configManager.manager']);

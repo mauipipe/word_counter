@@ -17,10 +17,11 @@ interface ConsoleRendererInterface
      */
     public function printResponseData(array $responseData);
 
+    public function printUsage();
+
+    public function initUsageRecorder();
     /**
-     * @param array $rustart
-     *
-     * @return mixed
+     * @param string $message
      */
-    public function printUsage(array $rustart);
+    public function printSingleLine($message);
 }

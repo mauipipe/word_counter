@@ -11,34 +11,85 @@ namespace WordCounter\Console;
 class ConsoleRenderer implements ConsoleRendererInterface
 {
     /**
-     * {@inheritdoc}
+     * @var bool
      */
-    public function printResponseData(array $responseData)
+    private $isUsageEnabled = false;
+    /**
+     * @var UsageRecorder
+     */
+    private $usageRecorder;
+
+    /**
+     * @param UsageRecorder $usageRecorder
+     */
+    public function __construct(UsageRecorder $usageRecorder)
     {
-        foreach ($responseData as $wordCount) {
-            echo sprintf("%s=%d\n", $wordCount->getWord(), $wordCount->getCount());
-        }
+        $this->usageRecorder = $usageRecorder;
+    }
+
+    public function initUsageRecorder()
+    {
+        $this->usageRecorder->initRuUsage();
+        $this->isUsageEnabled = true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function printUsage(array $rustart)
+    public function printSingleLine($message)
     {
-        function rutime($ru, $rus, $index)
-        {
-            return ($ru["ru_$index.tv_sec"] * 1000 + intval($ru["ru_$index.tv_usec"] / 1000))
-            - ($rus["ru_$index.tv_sec"] * 1000 + intval($rus["ru_$index.tv_usec"] / 1000));
+        echo $message;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function printResponseData(array $responseData)
+    {
+        $result = [];
+        foreach ($responseData as $wordCount) {
+            $result[] = sprintf("%s=%d\n", $wordCount->getWord(), $wordCount->getCount());
         }
 
-        $ru = getrusage();
-        $seconds = rutime($ru, $rustart, 'utime') / 1000;
-        echo "\nThis process used " . $seconds .
-            "sec for its computations\n";
-        echo 'It spent ' . rutime($ru, $rustart, 'stime') .
-            " ms in system calls\n";
+        return implode('', $result);
+    }
 
-        echo sprintf("real Usage %s\n", memory_get_peak_usage(true));
-        echo sprintf("peak usage %s\n", memory_get_peak_usage());
+    /**
+     * {@inheritdoc}
+     */
+    public function printUsage()
+    {
+        $result = [];
+        if (!$this->isUsageEnabled) {
+            return 'Usage not enabled';
+        }
+
+        $rustart = $this->usageRecorder->getRuUsage();
+        $ru = $this->usageRecorder->getCurrentUsage();
+        $seconds = $this->displayRutime($ru, $rustart, 'utime') / 1000;
+        $ruTime = $this->displayRutime($ru, $rustart, 'stime');
+
+        $result[] = "\nThis process used " . $seconds .
+            'sec for its computations';
+        $result[] = 'It spent ' . $ruTime .
+            ' ms in system calls';
+
+        $result[] = sprintf("real Usage %s\n", $this->usageRecorder->getMemoryPeak(true));
+        $result[] = sprintf("peak usage %s\n", $this->usageRecorder->getMemoryPeak());
+
+        return implode("\n", $result);
+    }
+
+    /**
+     * @param $ru
+     * @param $rus
+     * @param $index
+     *
+     * @return mixed
+     */
+    private function displayRutime($ru, $rus, $index)
+    {
+        return ($ru["ru_$index.tv_sec"] * 1000 + intval($ru["ru_$index.tv_usec"] / 1000))
+        - ($rus["ru_$index.tv_sec"] * 1000 + intval($rus["ru_$index.tv_usec"] / 1000));
     }
 }

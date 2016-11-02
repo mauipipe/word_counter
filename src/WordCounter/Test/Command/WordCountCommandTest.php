@@ -10,6 +10,7 @@ namespace WordCounter\Test\Command;
 
 use WordCounter\Command\CommandInterface;
 use WordCounter\Command\WordCountCommand;
+use WordCounter\Console\ConsoleRenderer;
 use WordCounter\Console\ConsoleRequest;
 use WordCounter\Guesser\ConsoleInputGuesserInterface;
 use WordCounter\Service\WordCountService;
@@ -29,6 +30,10 @@ class WordCountCommandTest extends \PHPUnit_Framework_TestCase
      */
     private $wordCountService;
     /**
+     * @var ConsoleRenderer|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $consoleRenderer;
+    /**
      * @var CommandInterface
      */
     private $wordCountCommand;
@@ -41,8 +46,15 @@ class WordCountCommandTest extends \PHPUnit_Framework_TestCase
         $this->wordCountService = $this->getMockBuilder('WordCounter\Service\WordCountService')
             ->disableOriginalConstructor()
             ->getMock();
+        $this->consoleRenderer = $this->getMockBuilder('WordCounter\Console\ConsoleRenderer')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->wordCountCommand = new WordCountCommand($this->wordCountService, $this->consoleInputGuesser);
+        $this->wordCountCommand = new WordCountCommand(
+            $this->wordCountService,
+            $this->consoleInputGuesser,
+            $this->consoleRenderer
+        );
     }
 
     /**
@@ -70,6 +82,14 @@ class WordCountCommandTest extends \PHPUnit_Framework_TestCase
             ->method('orderByNameAndWord')
             ->with(self::TEST_PARAMETER_VALUE)
             ->willReturn($expectedResult);
+
+        $this->consoleRenderer->expects($this->once())
+            ->method('initUsageRecorder');
+        $this->consoleRenderer->expects($this->once())
+            ->method('printResponseData')
+            ->with($expectedResult);
+        $this->consoleRenderer->expects($this->once())
+            ->method('printUsage');
 
         $this->wordCountCommand->execute($consoleRequest);
     }
