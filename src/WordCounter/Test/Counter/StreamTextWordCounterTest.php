@@ -61,11 +61,11 @@ class StreamTextWordCounterTest extends \PHPUnit_Framework_TestCase
             ->method('next');
 
         $expectedResult = $this->getHydratedMockWordCounts([
-            'foo' => 2,
-            'zen' => 2,
-            'bar' => 1,
-            'pon' => 1,
-            'ten' => 1,
+            'foo'  => 2,
+            'zen'  => 2,
+            'bar'  => 1,
+            'pon'  => 1,
+            'ten'  => 1,
             'test' => 1,
         ]);
 

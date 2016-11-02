@@ -95,14 +95,14 @@ class ConsoleInputValueGuesser implements ConsoleInputGuesserInterface
     /**
      * @param $fileSize
      *
-     * @return array
+     * @return string
      */
     private function convertValueToByte($fileSize)
     {
         $fileSizeMapper = [
-            'KB' => 1e2,
+            'KB' => 1e3,
             'M'  => 1e6,
-            'GB' => 1e7,
+            'GB' => 1e9,
         ];
 
         $fileSizeSuffix = preg_replace('/[^A-Z]/', '', $fileSize);
