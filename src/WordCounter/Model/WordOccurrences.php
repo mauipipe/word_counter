@@ -8,7 +8,7 @@ namespace WordCounter\Model;
  * Date: 31/10/16
  * Time: 21.14.
  */
-class WordCount implements IncrementerInterface
+class WordOccurrences implements IncrementerInterface
 {
     const INITIAL_COUNT = 1;
     /**

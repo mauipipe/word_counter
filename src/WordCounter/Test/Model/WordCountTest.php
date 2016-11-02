@@ -2,7 +2,7 @@
 
 namespace WordCounter\Test\Model;
 
-use WordCounter\Model\WordCount;
+use WordCounter\Model\WordOccurrences;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,13 +14,13 @@ class WordCountTest extends \PHPUnit_Framework_TestCase
 {
     const TEST_WORD = 'test';
     /**
-     * @var WordCount
+     * @var WordOccurrences
      */
     private $wordCount;
 
     public function setUp()
     {
-        $this->wordCount = new WordCount(self::TEST_WORD);
+        $this->wordCount = new WordOccurrences(self::TEST_WORD);
     }
 
     /**

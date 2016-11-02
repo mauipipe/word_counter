@@ -9,7 +9,7 @@
 namespace WordCounter\Counter;
 
 use WordCounter\Factory\SplFileObjectFactoryInterface;
-use WordCounter\Model\WordCount;
+use WordCounter\Model\WordOccurrences;
 
 class StreamTextWordCounter implements CounterInterface
 {
@@ -58,7 +58,7 @@ class StreamTextWordCounter implements CounterInterface
             $hash = crc32($subValue);
 
             if (!isset($result[$hash])) {
-                $result[$hash] = new WordCount($subValue);
+                $result[$hash] = new WordOccurrences($subValue);
             } else {
                 $result[$hash]->incrementCount();
             }

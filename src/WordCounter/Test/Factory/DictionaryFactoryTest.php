@@ -9,13 +9,13 @@
 namespace WordCounter\Test\Factory;
 
 use WordCounter\Factory\DictionaryFactory;
-use WordCounter\Manager\ConfigManager;
 use WordCounter\Model\Dictionary;
+use WordCounter\Repository\ConfigRepository;
 
 class DictionaryFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var ConfigManager|\PHPUnit_Framework_MockObject_MockObject
+     * @var ConfigRepository|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configManager;
     /**
@@ -25,10 +25,10 @@ class DictionaryFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->configManager = $this->getMockBuilder('WordCounter\Manager\ConfigManager')
+        $this->configManager = $this->getMockBuilder('WordCounter\Repository\ConfigRepository')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->getMockBuilder('WordCounter\Manager\ConfigManager')
+        $this->getMockBuilder('WordCounter\Repository\ConfigRepository')
             ->disableOriginalConstructor()
             ->getMock();
 

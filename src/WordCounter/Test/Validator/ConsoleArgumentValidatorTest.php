@@ -3,23 +3,22 @@
  * Created by IntelliJ IDEA.
  * User: mauilap
  * Date: 02/11/16
- * Time: 17.51
+ * Time: 17.51.
  */
 
 namespace WordCounter\Test\Validator;
 
-
 use WordCounter\Console\ConsoleRequest;
-use WordCounter\Manager\ConfigManager;
+use WordCounter\Repository\ConfigRepository;
 use WordCounter\Validator\ConsoleArgumentValidator;
 use WordCounter\Validator\ConsoleValidatorInterface;
 
 class ConsoleArgumentValidatorTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var ConfigManager|\PHPUnit_Framework_MockObject_MockObject
+     * @var ConfigRepository|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $configManager;
+    private $configRepository;
     /**
      * @var ConsoleValidatorInterface
      */
@@ -27,11 +26,11 @@ class ConsoleArgumentValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->configManager = $this->getMockBuilder('WordCounter\Manager\ConfigManager')
+        $this->configRepository = $this->getMockBuilder('WordCounter\Repository\ConfigRepository')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->consoleArgumentValidator = new ConsoleArgumentValidator($this->configManager);
+        $this->consoleArgumentValidator = new ConsoleArgumentValidator($this->configRepository);
     }
 
     /**
@@ -40,7 +39,7 @@ class ConsoleArgumentValidatorTest extends \PHPUnit_Framework_TestCase
     public function validatesConsoleRequest()
     {
         $mandatoryParams = ['--source', '--foo'];
-        $this->configManager->expects($this->once())
+        $this->configRepository->expects($this->once())
             ->method('getValue')
             ->with(ConsoleArgumentValidator::MANDATORY_CONSOLE_ARGS)
             ->willReturn($mandatoryParams);
@@ -62,7 +61,7 @@ class ConsoleArgumentValidatorTest extends \PHPUnit_Framework_TestCase
     public function throwsExceptionWhenInvalidOrMissingConsoleAttributesAreConsumed()
     {
         $mandatoryParams = ['--foo'];
-        $this->configManager->expects($this->once())
+        $this->configRepository->expects($this->once())
             ->method('getValue')
             ->with(ConsoleArgumentValidator::MANDATORY_CONSOLE_ARGS)
             ->willReturn($mandatoryParams);

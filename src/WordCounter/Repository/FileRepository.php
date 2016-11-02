@@ -6,14 +6,14 @@
  * Time: 10.58.
  */
 
-namespace WordCounter\Manager;
+namespace WordCounter\Repository;
 
 use WordCounter\App\App;
 use WordCounter\Factory\DictionaryFactory;
 use WordCounter\Model\Config;
 use WordCounter\Model\Dictionary;
 
-class FileManager
+class FileRepository
 {
     const RANDOM_FILE_PATH = 'random_file_path';
 
@@ -27,10 +27,10 @@ class FileManager
     private $dictionary;
 
     /**
-     * @param ConfigManager $configManager
+     * @param ConfigRepository $configManager
      * @param DictionaryFactory $dictionaryFactory
      */
-    public function __construct(ConfigManager $configManager, DictionaryFactory $dictionaryFactory)
+    public function __construct(ConfigRepository $configManager, DictionaryFactory $dictionaryFactory)
     {
         $this->config = $configManager;
         $this->dictionary = $dictionaryFactory->create();

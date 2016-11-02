@@ -3,28 +3,27 @@
  * Created by IntelliJ IDEA.
  * User: mauilap
  * Date: 02/11/16
- * Time: 17.41
+ * Time: 17.41.
  */
 
 namespace WordCounter\Validator;
 
-
 use WordCounter\Console\ConsoleRequest;
 use WordCounter\Exception\MissingMandatoryAttributeException;
-use WordCounter\Manager\ConfigManager;
+use WordCounter\Repository\ConfigRepository;
 
 class ConsoleArgumentValidator implements ConsoleValidatorInterface
 {
     const MANDATORY_CONSOLE_ARGS = 'mandatory_console_args';
     /**
-     * @var ConfigManager
+     * @var ConfigRepository
      */
     private $configManager;
 
     /**
-     * @param ConfigManager $configManager
+     * @param ConfigRepository $configManager
      */
-    public function __construct(ConfigManager $configManager)
+    public function __construct(ConfigRepository $configManager)
     {
         $this->configManager = $configManager;
     }
@@ -32,7 +31,7 @@ class ConsoleArgumentValidator implements ConsoleValidatorInterface
     public function validate(ConsoleRequest $consoleRequest)
     {
         $mandatoryArguments = $this->configManager->getValue(self::MANDATORY_CONSOLE_ARGS);
-        $arguments = $consoleRequest->getParameterValues();
+        $arguments = $consoleRequest->getAttributeValues();
 
         if ($consoleRequest->isStdin()) {
             return;

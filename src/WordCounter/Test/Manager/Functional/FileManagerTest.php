@@ -10,17 +10,17 @@ namespace WordCounter\Test\Manager\Functional;
 
 use WordCounter\App\App;
 use WordCounter\Factory\DictionaryFactory;
-use WordCounter\Manager\ConfigManager;
-use WordCounter\Manager\FileManager;
 use WordCounter\Model\Dictionary;
+use WordCounter\Repository\ConfigRepository;
+use WordCounter\Repository\FileRepository;
 use WordCounter\Test\Enum\ConfigTest;
 
 class FileManagerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var ConfigManager|\PHPUnit_Framework_MockObject_MockObject
+     * @var ConfigRepository|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $configManager;
+    private $configRepository;
     /**
      * @var DictionaryFactory|\PHPUnit_Framework_MockObject_MockObject
      */
@@ -30,13 +30,13 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
      */
     private $randomTestFilePath;
     /**
-     * @var FileManager
+     * @var FileRepository
      */
     private $fileManager;
 
     public function setUp()
     {
-        $this->configManager = $this->getMockBuilder('WordCounter\Manager\ConfigManager')
+        $this->configRepository = $this->getMockBuilder('WordCounter\Repository\ConfigRepository')
             ->disableOriginalConstructor()
             ->getMock();
         $this->dictionaryFactory = $this->getMockBuilder('WordCounter\Factory\DictionaryFactory')
@@ -50,7 +50,7 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
             ->method('create')
             ->willReturn($dictionary);
 
-        $this->fileManager = new FileManager($this->configManager, $this->dictionaryFactory);
+        $this->fileManager = new FileRepository($this->configRepository, $this->dictionaryFactory);
     }
 
     /**
@@ -60,9 +60,9 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
     {
         $fileSize = 1e2;
 
-        $this->configManager->expects($this->once())
+        $this->configRepository->expects($this->once())
             ->method('getValue')
-            ->with(FileManager::RANDOM_FILE_PATH)
+            ->with(FileRepository::RANDOM_FILE_PATH)
             ->willReturn(ConfigTest::RANDOM_FILE_PATH);
 
         $this->fileManager->createRandomFile($fileSize);

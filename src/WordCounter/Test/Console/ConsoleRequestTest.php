@@ -24,7 +24,7 @@ class ConsoleRequestTest extends \PHPUnit_Framework_TestCase
     public function getsConsoleValueFromParameter($mockArgv, $expectedResult)
     {
         $consoleRequest = new ConsoleRequest($mockArgv);
-        $result = $consoleRequest->getParameterValue(self::TEST_ATTRIBUTE);
+        $result = $consoleRequest->getAttributeValue(self::TEST_ATTRIBUTE);
 
         $this->assertEquals($expectedResult, $result);
     }
@@ -79,6 +79,6 @@ class ConsoleRequestTest extends \PHPUnit_Framework_TestCase
         $invalidConsumedAttribute = 'invalid';
 
         $consoleRequest = new ConsoleRequest($mockArgv);
-        $consoleRequest->getParameterValue($invalidConsumedAttribute);
+        $consoleRequest->getAttributeValue($invalidConsumedAttribute);
     }
 }

@@ -26,7 +26,7 @@ class ConsoleRequest
      */
     public function __construct(array $argumentsValues)
     {
-        $this->consoleInputs = $this->getConsoleInputs($argumentsValues);
+        $this->consoleInputs = $this->getConsoleAttributeValues($argumentsValues);
     }
 
     /**
@@ -36,7 +36,7 @@ class ConsoleRequest
      *
      * @throws UndefinedAttributeException
      */
-    public function getParameterValue($key)
+    public function getAttributeValue($key)
     {
         if (!isset($this->consoleInputs[$key])) {
             throw new UndefinedAttributeException(sprintf('%s', $key));
@@ -48,7 +48,7 @@ class ConsoleRequest
     /**
      * @return array
      */
-    public function getParameterValues()
+    public function getAttributeValues()
     {
         return $this->consoleInputs;
     }
@@ -70,13 +70,21 @@ class ConsoleRequest
     }
 
     /**
+     * @return bool
+     */
+    public function isTestEnv()
+    {
+        return in_array('--test', $this->consoleInputs);
+    }
+
+    /**
      * @param array $argumentValues
      *
      * @return array
      *
      * @throws InvalidAttributeException
      */
-    private function getConsoleInputs(array $argumentValues)
+    private function getConsoleAttributeValues(array $argumentValues)
     {
         $consoleInputs = [];
 
@@ -94,13 +102,5 @@ class ConsoleRequest
         }
 
         return $consoleInputs;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isTestEnv()
-    {
-        return in_array('--test', $this->consoleInputs);
     }
 }

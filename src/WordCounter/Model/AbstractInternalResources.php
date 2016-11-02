@@ -10,7 +10,7 @@ namespace WordCounter\Model;
 
 use WordCounter\Exception\UndefinedConfigValueException;
 
-abstract class AbstractInternalFile implements InternalResourceSerializerInterface
+abstract class AbstractInternalResources implements InternalResourceSerializerInterface
 {
     /**
      * @var array

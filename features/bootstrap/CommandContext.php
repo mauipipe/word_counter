@@ -115,6 +115,7 @@ class CommandContext implements Context
     private function getResult()
     {
         $commandResponse = trim(str_replace("\n", ' ', $this->commandResponse));
+
         return explode(' ', $commandResponse);
     }
 
@@ -137,6 +138,6 @@ class CommandContext implements Context
      */
     public function errorMessageShouldAppear(PyStringNode $string)
     {
-        PHPUnit_Framework_Assert::assertSame(explode(" ", $string), $this->getResult());
+        PHPUnit_Framework_Assert::assertSame(explode(' ', $string), $this->getResult());
     }
 }

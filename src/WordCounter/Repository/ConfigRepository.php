@@ -6,11 +6,11 @@
  * Time: 20.43.
  */
 
-namespace WordCounter\Manager;
+namespace WordCounter\Repository;
 
 use WordCounter\Exception\UndefinedConfigValueException;
 
-class ConfigManager
+class ConfigRepository
 {
     /**
      * @var array

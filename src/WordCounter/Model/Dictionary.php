@@ -8,7 +8,7 @@
 
 namespace WordCounter\Model;
 
-class Dictionary extends AbstractInternalFile
+class Dictionary extends AbstractInternalResources
 {
     const DICTIONARY_SEPARATOR = ',';
 

@@ -3,7 +3,7 @@
 namespace WordCounter\Service;
 
 use WordCounter\Counter\CounterInterface;
-use WordCounter\Model\WordCount;
+use WordCounter\Model\WordOccurrences;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,7 +31,7 @@ class WordCountService
     /**
      * @param string $consoleValue
      *
-     * @return WordCount[]
+     * @return WordOccurrences[]
      */
     public function orderByNameAndWord($consoleValue)
     {

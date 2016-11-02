@@ -8,6 +8,6 @@
 
 namespace WordCounter\Model;
 
-class Config extends AbstractInternalFile
+class Config extends AbstractInternalResources
 {
 }

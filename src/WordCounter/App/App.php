@@ -17,8 +17,8 @@ use WordCounter\Counter\StreamTextWordCounter;
 use WordCounter\Factory\DictionaryFactory;
 use WordCounter\Factory\SplFileObjectFactory;
 use WordCounter\Guesser\ConsoleInputValueGuesser;
-use WordCounter\Manager\ConfigManager;
-use WordCounter\Manager\FileManager;
+use WordCounter\Repository\ConfigRepository;
+use WordCounter\Repository\FileRepository;
 use WordCounter\Service\WordCountService;
 use WordCounter\Validator\ConsoleArgumentValidator;
 
@@ -31,7 +31,7 @@ class App
      */
     public static function init($configFilePath)
     {
-        $config = new ConfigManager($configFilePath);
+        $config = new ConfigRepository($configFilePath);
 
         return self::getContainer($config);
     }
@@ -61,11 +61,11 @@ class App
     }
 
     /**
-     * @param ConfigManager $config
+     * @param ConfigRepository $config
      *
      * @return Container
      */
-    private static function getContainer(ConfigManager $config)
+    private static function getContainer(ConfigRepository $config)
     {
         $dependencies = [
             'console_value.guesser'      => function ($c) {
@@ -92,9 +92,9 @@ class App
                 );
             },
             'file.manager'               => function ($c) {
-                return new FileManager($c['configManager.manager'], $c['dictionary.factory']);
+                return new FileRepository($c['configRepository.manager'], $c['dictionary.factory']);
             },
-            'configManager.manager'      => function ($c) use ($config) {
+            'configRepository.manager'   => function ($c) use ($config) {
                 return $config;
             },
             'console.renderer'           => function ($c) {
@@ -104,10 +104,10 @@ class App
                 return new UsageRecorder();
             },
             'dictionary.factory'         => function ($c) {
-                return new DictionaryFactory($c['configManager.manager']);
+                return new DictionaryFactory($c['configRepository.manager']);
             },
             'console_argument.validator' => function ($c) {
-                return new ConsoleArgumentValidator($c['configManager.manager']);
+                return new ConsoleArgumentValidator($c['configRepository.manager']);
             },
         ];
 

@@ -6,7 +6,7 @@ use WordCounter\App\App;
 use WordCounter\Console\ConsoleRequest;
 use WordCounter\Enum\ConsoleAttributes;
 use WordCounter\Exception\UndefinedInputValueException;
-use WordCounter\Manager\FileManager;
+use WordCounter\Repository\FileRepository;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,9 +24,9 @@ class ConsoleInputValueGuesser implements ConsoleInputGuesserInterface
     private $fileManager;
 
     /**
-     * @param FileManager $fileManager
+     * @param FileRepository $fileManager
      */
-    public function __construct(FileManager $fileManager)
+    public function __construct(FileRepository $fileManager)
     {
         $this->fileManager = $fileManager;
     }
@@ -40,7 +40,7 @@ class ConsoleInputValueGuesser implements ConsoleInputGuesserInterface
             return self::STDIN;
         }
 
-        $values = $consoleRequest->getParameterValues();
+        $values = $consoleRequest->getAttributeValues();
 
         foreach ($values as $attribute => $value) {
             switch ($attribute) {
@@ -62,7 +62,7 @@ class ConsoleInputValueGuesser implements ConsoleInputGuesserInterface
             }
         }
 
-        throw new UndefinedInputValueException(sprintf('invalid console value %s', implode(',', $consoleRequest->getParameterValues())));
+        throw new UndefinedInputValueException(sprintf('invalid console value %s', implode(',', $consoleRequest->getAttributeValues())));
     }
 
     /**

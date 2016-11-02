@@ -8,7 +8,7 @@
 
 namespace WordCounter\Test\Manager;
 
-use WordCounter\Manager\ConfigManager;
+use WordCounter\Repository\ConfigRepository;
 
 class ConfigManagerTest extends \PHPUnit_Framework_TestCase
 {
@@ -16,13 +16,13 @@ class ConfigManagerTest extends \PHPUnit_Framework_TestCase
     const VALUE = 'bar';
 
     /**
-     * @var ConfigManager
+     * @var ConfigRepository
      */
     private $configManager;
 
     public function setUp()
     {
-        $this->configManager = new ConfigManager(__DIR__ . '/../fixtures/config.json');
+        $this->configManager = new ConfigRepository(__DIR__ . '/../fixtures/config.json');
     }
 
     /**

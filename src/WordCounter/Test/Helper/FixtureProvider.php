@@ -2,7 +2,7 @@
 
 namespace WordCounter\Test\Helper;
 
-use WordCounter\Model\WordCount;
+use WordCounter\Model\WordOccurrences;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,11 +31,11 @@ trait FixtureProvider
      * @param string $word
      * @param string $count
      *
-     * @return WordCount
+     * @return WordOccurrences
      */
     protected function getWordCountIncrementedBy($word, $count)
     {
-        $wordCount = new WordCount($word);
+        $wordCount = new WordOccurrences($word);
         for ($i = 0; $i < $count - 1; ++$i) {
             $wordCount->incrementCount();
         }

@@ -12,7 +12,7 @@ use WordCounter\Console\ConsoleRequest;
 use WordCounter\Enum\ConsoleAttributes;
 use WordCounter\Guesser\ConsoleInputGuesserInterface;
 use WordCounter\Guesser\ConsoleInputValueGuesser;
-use WordCounter\Manager\FileManager;
+use WordCounter\Repository\FileRepository;
 use WordCounter\Test\Console\ConsoleRequestTest;
 use WordCounter\Test\Enum\ConfigTest;
 
@@ -21,9 +21,9 @@ class ConsoleInputValueGuesserTest extends \PHPUnit_Framework_TestCase
     const TEST_ATTRIBUTE = '--foo';
 
     /**
-     * @var FileManager|\PHPUnit_Framework_MockObject_MockObject
+     * @var FileRepository|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $fileManager;
+    private $fileRepository;
     /**
      * @var ConsoleInputGuesserInterface
      */
@@ -31,11 +31,11 @@ class ConsoleInputValueGuesserTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->fileManager = $this->getMockBuilder('WordCounter\Manager\FileManager')
+        $this->fileRepository = $this->getMockBuilder('WordCounter\Repository\FileRepository')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->consoleInputValueGuesser = new ConsoleInputValueGuesser($this->fileManager);
+        $this->consoleInputValueGuesser = new ConsoleInputValueGuesser($this->fileRepository);
     }
 
     /**
@@ -91,11 +91,11 @@ class ConsoleInputValueGuesserTest extends \PHPUnit_Framework_TestCase
 
         $expectedResult = 'random.txt';
 
-        $this->fileManager->expects($this->once())
+        $this->fileRepository->expects($this->once())
             ->method('createRandomFile')
             ->with(12e6);
 
-        $this->fileManager->expects($this->once())
+        $this->fileRepository->expects($this->once())
             ->method('getRandomFilePath')
             ->willReturn($expectedResult);
 

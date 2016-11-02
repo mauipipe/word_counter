@@ -10,21 +10,21 @@ namespace WordCounter\Factory;
 
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use WordCounter\App\App;
-use WordCounter\Manager\ConfigManager;
 use WordCounter\Model\Dictionary;
+use WordCounter\Repository\ConfigRepository;
 
 class DictionaryFactory
 {
     const DICTIONARY_PATH = 'dictionary_path';
     /**
-     * @var ConfigManager
+     * @var ConfigRepository
      */
     private $configManager;
 
     /**
-     * @param ConfigManager $config
+     * @param ConfigRepository $config
      */
-    public function __construct(ConfigManager $config)
+    public function __construct(ConfigRepository $config)
     {
         $this->configManager = $config;
     }
