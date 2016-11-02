@@ -8,7 +8,7 @@ php:
   - nightly
 before-script:
    - composer self-update
-   - composer install
+   - php composer.phar install
 script:
-   - phpunit -c ./phpunit.xml
+   - phpunit -c ./phpunit.xml src/
    - php bin/behat
